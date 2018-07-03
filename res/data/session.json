@@ -1,0 +1,37 @@
+{
+	"karaoke": {
+		"guild": [{"id": "0", "session": false, "current": "N/A", "next": "N/A"}]
+	},
+	
+	"raffle": {
+		"guild": [{"id": "0", "session": false}]
+	},
+	
+	"wiki": {
+		"user": [{"id": "0", "session": false}]
+	},
+	
+	"genius": {
+		"user": [{"id": "0", "session": false}]
+	},
+	
+	"challonge": {
+		"user": [{"id": "0", "session": false}]
+	},
+	
+	"spotify": {
+		"user": [{"id": "0", "session": false}]
+	},
+	
+	"speedrun": {
+		"user": [{"id": "0", "session": false}]
+	},
+	
+	"mal": {
+		"user": [{"id": "0", "session": false}]
+	},
+	
+	"banNew": {
+		"user": [{"id": "0", "session": false}]
+	}
+}
