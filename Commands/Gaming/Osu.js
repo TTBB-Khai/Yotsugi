@@ -1,45 +1,12 @@
 const fetch = require('node-fetch');
 
 var osuCommand = TTBT.registerCommand("osu", (msg, args) => {
-	if(args.length === 0) {
+	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "osu [OSU USERNAME HERE]**";
-	}
 	
-	fetch('https://osu.ppy.sh/api/get_user?u=' + args.join(" ") + '&k=' + process.env['OSU_API_KEY'] + '&m=0')
-        .then(function (channel) {
-            channel.text().then(osu => {
-                let osuData = JSON.parse(osu);
-				if (osuData.length > 0) {
-					TTBT.createMessage(msg.channel.id, "```Markdown\n" 
-									+ " * USER INFO *\n" 
-									+ "User: " + osuData[0].username + "\n" 
-									+ "ID: " + osuData[0].user_id + "\n\n"
-
-									+ " * COUNTRY INFO *\n" 
-									+ "Country: " + osuData[0].country + "\n" 
-									+ "Country Rank: " + osuData[0].pp_country_rank + "\n\n"
-
-									+ " * RANK INFO *\n" 
-									+ "Ranked Score: " + osuData[0].ranked_score + "\n" 
-									+ "PP Rank: " + osuData[0].pp_rank + "\n" 
-									+ "Total Score: " + osuData[0].total_score + "\n\n"
-
-									+ " * PLAY INFO *\n" 
-									+ "Play Count: " + osuData[0].playcount + "\n" 
-									+ "Level: " + osuData[0].level + "\n" 
-									+ "Accuracy: " + osuData[0].accuracy + "\n\n"
-
-									+ " * GRADE INFO *\n" 
-									+ "SS: " + osuData[0].count_rank_ss
-									+ " | " + "S: " + osuData[0].count_rank_s + " | " + "A: "
-									+ osuData[0].count_rank_a + "\n"
-									+ "```");
-				}
-				else {
-					TTBT.createMessage(msg.channel.id, "**User not found!**");
-				}
-            });
-        })
+	let user = args.join(" ");	
+	getData(user, msg);
+	
 },	{
 		cooldown: 3000,
 		caseInsensitive: true,
@@ -49,3 +16,51 @@ var osuCommand = TTBT.registerCommand("osu", (msg, args) => {
 		}
 	}
 );
+
+function getData(user, msg) {
+	
+	async function getURL() {
+		try {
+			let response = await fetch('https://osu.ppy.sh/api/get_user?u=' + user + '&k=' + process.env['OSU_API_KEY'] + '&m=0');
+			return await response.json();
+		}
+		catch(err) {
+			TTBT.createMessage(msg.channel.id, "Failed to load osu.ppy.sh");
+			throw err;
+		}
+	}
+	
+	Promise.resolve(getURL()).then(data => {
+		if (data.length > 0) {
+			TTBT.createMessage(msg.channel.id, "```Markdown\n" 
+				+ " * USER INFO *\n" 
+				+ "User: " + data[0].username + "\n" 
+				+ "ID: " + data[0].user_id + "\n\n"
+
+				+ " * COUNTRY INFO *\n" 
+				+ "Country: " + data[0].country + "\n" 
+				+ "Country Rank: " + data[0].pp_country_rank + "\n\n"
+
+				+ " * RANK INFO *\n" 
+				+ "Ranked Score: " + data[0].ranked_score + "\n" 
+				+ "PP Rank: " + data[0].pp_rank + "\n" 
+				+ "Total Score: " + data[0].total_score + "\n\n"
+
+				+ " * PLAY INFO *\n" 
+				+ "Play Count: " + data[0].playcount + "\n" 
+				+ "Level: " + data[0].level + "\n" 
+				+ "Accuracy: " + data[0].accuracy + "\n\n"
+
+				+ " * GRADE INFO *\n" 
+				+ "SS: " + data[0].count_rank_ss + " | " 
+				+ "S: " + data[0].count_rank_s + " | " 
+				+ "A: " + data[0].count_rank_a + "\n"
+				+ "```");
+		}
+		else
+			TTBT.createMessage(msg.channel.id, "**User not found!**");
+	})
+	.catch(err => {
+		TTBT.createMessage(msg.channel.id, "If you are the owner, to set up this command, please refer to the README.");
+	})
+}
