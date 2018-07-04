@@ -42,17 +42,14 @@ function loadSongList(song, msg) {
 		
 	TTBT.sendChannelTyping(msg.channel.id);
 		
-	Promise.all([
-		Promise.resolve(getURL()),
-		Promise.resolve(msg)
-	])
+	Promise.resolve(getURL())
 	.then(data => {
-		printSongList(data);
+		printSongList(data, msg);
 		return data;
 	})
 	.then(data => {
-		if (data[0].response.hits.length !== 0) 
-			getSong(data);
+		if (data.response.hits.length !== 0) 
+			getSong(data, msg);
 	})
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "If you are the owner, to set up this command, please refer to the README.");
@@ -60,42 +57,32 @@ function loadSongList(song, msg) {
 	})
 }
 
-function printSongList(promiseData) {
+function printSongList(songData, msg) {
 	let songs = '```Markdown\n';
-	songs += promiseData[0].response.hits.length === 0 ? 'No songs found with this search' : ' * Related Songs * \n\n';
+	songs += songData.response.hits.length === 0 ? 'No songs found with this search' : ' * Related Songs * \n\n';
 		
-	for (let i = 0; i <= promiseData[0].response.hits.length - 1; i++)
-		songs += '[' + (i + 1) + '] ' + promiseData[0].response.hits[i].result.full_title + '\n';
+	for (let i = 0; i <= songData.response.hits.length - 1; i++)
+		songs += '[' + (i + 1) + '] ' + songData.response.hits[i].result.full_title + '\n';
 	
-	if (promiseData[0].response.hits.length !== 0)
+	if (songData.response.hits.length !== 0)
 		songs += '\n' + '> Type the number of your choice into chat OR type "cancel" to exit the menu';
+	else
+		session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 	
-	TTBT.createMessage(promiseData[1].channel.id, songs + '```');
-	
-	delete(promiseData);
+	TTBT.createMessage(msg.channel.id, songs + '```');
 }
 
-function getSong(promiseData) {
+function getSong(songData, msg) {
 	function waitForYourMessage (newMsg) {
-		if (newMsg.author.id === promiseData[1].author.id && newMsg.channel.id === promiseData[1].channel.id) {
+		if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
 			if (!isNaN(newMsg.content) && newMsg.content != 0) {
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-
-				Promise.all([
-					Promise.resolve(promiseData[0].response.hits[Number(newMsg.content) - 1]),
-					Promise.resolve(promiseData[1]),
-					Promise.resolve(promiseData[2])
-				])
-				.then(data => loadLyrics(data))
-				.catch(err => {
-					TTBT.createMessage(promiseData[1].channel.id, 'You entered something invalid. The menu has been cancelled.');
-					session.genius.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
-				})
+				loadLyrics(songData.response.hits[Number(newMsg.content) - 1], msg);
 			}
 			else if (newMsg.content === 'exit') { 
-				TTBT.createMessage(promiseData[1].channel.id, 'You have exited the menu');
+				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-				session.genius.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+				session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 			}
 		}
 	}	
@@ -104,46 +91,40 @@ function getSong(promiseData) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.genius.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+		session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
-	
-	delete(promiseData);
 }
 
-function loadLyrics(promiseData) {
+function loadLyrics(song, msg) {
 	async function getURL() {
 		try {
-			let response = await fetch(promiseData[0].result.url);
+			let response = await fetch(song.result.url);
 			let text = await response.text();
 			let $ = cheerio.load(text);
 			return $('.lyrics').text().trim();
 		}
 		catch (err) {
-			TTBT.createMessage(promiseData[1].channel.id, "Failed to load genius.com");
+			TTBT.createMessage(msg.channel.id, "Failed to load genius.com");
 			throw err;
 		}
 	}
 		
-	TTBT.sendChannelTyping(promiseData[1].channel.id);
+	TTBT.sendChannelTyping(msg.channel.id);
 		
-	Promise.all([
-		Promise.resolve(getURL()),
-		Promise.resolve(promiseData[1]),
-		Promise.resolve(promiseData[0])
-	])
-	.then(data => printLyrics(data))
+	Promise.resolve(getURL())
+	.then(data => printLyrics(data, msg, song))
 	.catch(err => {
-		TTBT.createMessage(promiseData[1].channel.id, "No songs found with this search.");
-		session.genius.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+		TTBT.createMessage(msg.channel.id, "No songs found with this search.");
+		session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 	})
 }
 
-function printLyrics(promiseData) {
-	let output = (promiseData[0].length < 2000) ? '```Markdown\n' + promiseData[0] + '\n```' 
-	: 'These lyrics are too long to fit in a discord message ):\n **Here is a link to the full lyrics: ' + promiseData[2].result.url + '**';
+function printLyrics(lyricData, msg, song) {
+	let output = (lyricData.length < 2000) ? '```Markdown\n' + lyricData + '\n```' 
+	: 'These lyrics are too long to fit in a discord message ):\n **Here is a link to the full lyrics: ' + song.result.url + '**';
 	
-	TTBT.createMessage(promiseData[1].channel.id, output);
-	session.genius.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+	TTBT.createMessage(msg.channel.id, output);
+	session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 }
 
 TTBT.registerCommandAlias("lyric", "lyrics");

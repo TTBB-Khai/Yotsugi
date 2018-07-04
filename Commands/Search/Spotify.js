@@ -2,10 +2,10 @@ const path = require('path')
 const spotify = require(path.join(process.cwd(), 'res', 'data', 'spotify.json'));
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 const fetch = require('node-fetch');
-var express = require("express");
-var request = require("request");
+const express = require("express");
+const request = require("request");
 
-var app = express();
+const app = express();
 
 const userpass = process.env['SPOTIFY_CLIENT_ID'] + ':' + process.env['SPOTIFY_CLIENT_SECRET'];
 const basicAuth = 'Basic ' + Buffer.from(userpass).toString('base64');
@@ -55,56 +55,49 @@ function loadArtistList(artist, msg) {
 		
 	TTBT.sendChannelTyping(msg.channel.id);
 		
-	Promise.all([
-		Promise.resolve(getURL()),
-		Promise.resolve(msg)
-	])
+	Promise.resolve(getURL())
 	.then(data => {
-		printArtistList(data);
+		printArtistList(data, msg);
 		return data;
 	})
 	.then(data => {
-		if (data[0].artists.items.length !== 0) 
-			getArtistId(data);
+		if (data.artists.items.length !== 0) 
+			getArtistId(data, msg);
 	})
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "If you are the owner, to set up this command, please refer to the README.")
-		session.spotify.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false
+		session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = false
 	})
 }
 
-function printArtistList(promiseData) {
+function printArtistList(spotifyData, msg) {
 	let artists = '```Markdown\n';
-	artists += promiseData[0].artists.items.length === 0 ? 'No artists found with this search' : ' * Related Artists * \n\n';
+	artists += spotifyData.artists.items.length === 0 ? 'No artists found with this search' : ' * Related Artists * \n\n';
 		
-	for (let i = 0; i <= promiseData[0].artists.items.length - 1; i++)
-		artists += '[' + (i + 1) + '] ' + promiseData[0].artists.items[i].name + ' (Genre: ' + promiseData[0].artists.items[i].genres[0] + ')\n';
+	for (let i = 0; i <= spotifyData.artists.items.length - 1; i++)
+		artists += '[' + (i + 1) + '] ' + spotifyData.artists.items[i].name + ' (Genre: ' + spotifyData.artists.items[i].genres[0] + ')\n';
 	
-	if (promiseData[0].artists.items.length !== 0)
+	if (spotifyData.artists.items.length !== 0)
 		artists += '\n' + '> Type the number of your choice into chat OR "exit" else to exit the menu';
+	else
+		session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = false
 	
-	TTBT.createMessage(promiseData[1].channel.id, artists + '```');
+	TTBT.createMessage(msg.channel.id, artists + '```');
 	
 	delete(promiseData);
 }
 
-function getArtistId(promiseData) {
+function getArtistId(spotifyData, msg) {
 	function waitForYourMessage (newMsg) {
-		if (newMsg.author.id === promiseData[1].author.id && newMsg.channel.id === promiseData[1].channel.id) {
+		if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
 			if (!isNaN(newMsg.content) && newMsg.content != 0) {
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-
-				Promise.all([
-					Promise.resolve(promiseData[0].artists.items[Number(newMsg.content) - 1]),
-					Promise.resolve(promiseData[1])
-				])
-				.then(data => loadArtistInfo(data))
-				.catch(err => TTBT.createMessage(promiseData[1].channel.id, 'You entered something invalid. The menu has been cancelled.'))
+				loadArtistInfo(spotifyData.artists.items[Number(newMsg.content) - 1], msg);
 			}
 			else if (newMsg.content === 'exit') { 
-				TTBT.createMessage(promiseData[1].channel.id, 'You have exited the menu');
+				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-				session.spotify.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+				session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 			}
 		}
 	}	
@@ -113,13 +106,13 @@ function getArtistId(promiseData) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.spotify.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+		session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
 	
 	delete(promiseData);
 }
 
-function loadArtistInfo(promiseData) {
-	TTBT.createMessage(promiseData[1].channel.id, promiseData[0].external_urls.spotify);
-	session.spotify.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+function loadArtistInfo(artistData, msg) {
+	TTBT.createMessage(msg.channel.id, artistData.external_urls.spotify);
+	session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 }

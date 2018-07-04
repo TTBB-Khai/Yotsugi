@@ -41,53 +41,43 @@ function loadGameList(game, msg) {
 		
 	TTBT.sendChannelTyping(msg.channel.id);
 		
-	Promise.all([
-		Promise.resolve(getURL()),
-		Promise.resolve(msg)
-	])
+	Promise.resolve(getURL())
 	.then(data => {
-		printGameList(data);
+		printGameList(data, msg);
 		return data;
 	})
 	.then(data => {
-		if (data[0].data.length !== 0) 
-			getGame(data);
+		if (data.data.length !== 0) 
+			getGame(data, msg);
 	})
 	.catch(err => TTBT.createMessage(msg.channel.id, "No games found with this search."))
 }
 
-function printGameList(promiseData) {
+function printGameList(srData, msg) {
 	let games = '```Markdown\n';
-	games += promiseData[0].data.length === 0 ? 'No games found with this search' : ' * Related Games * \n\n';
+	games += srData.data.length === 0 ? 'No games found with this search' : ' * Related Games * \n\n';
 		
-	for (let i = 0; i <= promiseData[0].data.length - 1; i++)
-		games += '[' + (i + 1) + '] ' + promiseData[0].data[i].names.international + '\n';
+	for (let i = 0; i <= srData.data.length - 1; i++)
+		games += '[' + (i + 1) + '] ' + srData.data[i].names.international + '\n';
 	
-	if (promiseData[0].data.length !== 0)
+	if (srData.data.length !== 0)
 		games += '\n' + '> Type the number of your choice into chat OR type "exit" to exit the menu';
 	
-	TTBT.createMessage(promiseData[1].channel.id, games + '```');
+	TTBT.createMessage(msg.channel.id, games + '```');
 	
-	delete(promiseData);
 }
 
-function getGame(promiseData) {
+function getGame(srData, msg) {
 	function waitForYourMessage (newMsg) {
-		if (newMsg.author.id === promiseData[1].author.id && newMsg.channel.id === promiseData[1].channel.id) {
-			if (!isNaN(newMsg.content) && newMsg.content != 0 && Number(newMsg.content) <= promiseData[0].data.length) {
+		if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
+			if (!isNaN(newMsg.content) && newMsg.content != 0 && Number(newMsg.content) <= srData.data.length) {
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-
-				Promise.all([
-					Promise.resolve(promiseData[0].data[Number(newMsg.content) - 1]),
-					Promise.resolve(promiseData[1])
-				])
-				.then(data => loadGame(data))
-				.catch(err => TTBT.createMessage(promiseData[1].channel.id, 'You entered something invalid. The menu has been cancelled.'))
+				loadGame(srData.data[Number(newMsg.content) - 1], msg);
 			}
 			else if (newMsg.content === 'exit') { 
-				TTBT.createMessage(promiseData[1].channel.id, 'You have exited the menu');
+				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-				session.speedrun.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+				session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 			}
 		}
 	}	
@@ -96,74 +86,59 @@ function getGame(promiseData) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.speedrun.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+		session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
 	
-	delete(promiseData);
 }
 
-function loadGame(promiseData) {
+function loadGame(game, msg) {
 	async function getURL() {
 		try {
-			let response = await fetch('https://www.speedrun.com/api/v1/games/' + promiseData[0].id + '/categories?type=per-game');
+			let response = await fetch('https://www.speedrun.com/api/v1/games/' + game.id + '/categories?type=per-game');
 			return await response.json();
 		}
 		catch (err) {
-			TTBT.createMessage(promiseData[1].channel.id, 'Failed to load speedrun.com');
-			session.speedrun.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+			TTBT.createMessage(msg.channel.id, 'Failed to load speedrun.com');
+			session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 			throw err;
 		}
 	}
 	
-	Promise.all([
-		Promise.resolve(getURL()),
-		Promise.resolve(promiseData[1]),
-		Promise.resolve(promiseData[0])
-	])
-	.then(data => {
-		printCategories(data);
-		return data;
-	})
-	.then(data => {
-		getCategory(data);
-		return data;
-	})
-	.catch(err => TTBT.createMessage(promiseData[1].channel.id, 'Something went wrong :/'))
+	TTBT.sendChannelTyping(msg.channel.id);
 	
-	delete(promiseData);
+	Promise.resolve(getURL())
+	.then(data => {
+		printCategories(data, msg);
+		return data;
+	})
+	.then(data => {
+		getCategory(data, msg, game);
+	})
+	.catch(err => TTBT.createMessage(msg.channel.id, 'Something went wrong :/'))
 }
 
-function printCategories(promiseData) {
+function printCategories(categoryData, msg) {
 	let categories = '```Markdown\n'
 		+ ' * Categories * \n\n';
 		
-	for (let i = 0; i <= promiseData[0].data.length - 1; i++)
-		categories += '[' + (i + 1) + '] ' + promiseData[0].data[i].name + '\n';
+	for (let i = 0; i <= categoryData.data.length - 1; i++)
+		categories += '[' + (i + 1) + '] ' + categoryData.data[i].name + '\n';
 	
 	categories += '\n' + '> Type the number of your choice into chat OR type anything else to exit the menu```';
-	TTBT.createMessage(promiseData[1].channel.id, categories);
-	
-	delete(promiseData);
+	TTBT.createMessage(msg.channel.id, categories);
 }
 
-function getCategory(promiseData) {
+function getCategory(categoryData, msg, game) {
 	function waitForYourMessage (newMsg) {
-		if (newMsg.author.id === promiseData[1].author.id && newMsg.channel.id === promiseData[1].channel.id) {
-			if (!isNaN(newMsg.content) && newMsg.content != 0 && Number(newMsg.content) <= promiseData[0].data.length) {
-				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-
-				Promise.all([
-					Promise.resolve(promiseData[0].data[Number(newMsg.content) - 1]),
-					Promise.resolve(promiseData[1]),
-					Promise.resolve(promiseData[2])
-				])
-				.then(data => loadLeaderBoard(data))
-				.catch(err => TTBT.createMessage(promiseData[1].channel.id, 'You entered something invalid. The menu has been cancelled.'))
+		if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
+			if (!isNaN(newMsg.content) && newMsg.content != 0 && Number(newMsg.content) <= categoryData.data.length) {
+				TTBT.removeListener('messageCreate', waitForYourMessage, true);
+				loadLeaderBoard(categoryData.data[Number(newMsg.content) - 1], msg, game);			
 			}
 			else if (newMsg.content === 'exit') { 
-				TTBT.createMessage(promiseData[1].channel.id, 'You have exited the menu');
+				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-				session.speedrun.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+				session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 			}
 		}
 	}	
@@ -172,54 +147,46 @@ function getCategory(promiseData) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.speedrun.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+		session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
-	
-	delete(promiseData);
 }
 
-function loadLeaderBoard(promiseData) {
+function loadLeaderBoard(category, msg, game) {
 	async function getURL() {
 		try {
-			let response = await fetch('https://www.speedrun.com/api/v1/leaderboards/' + promiseData[2].id + '/category/' + promiseData[0].id + '?top=3&embed=players');
+			let response = await fetch('https://www.speedrun.com/api/v1/leaderboards/' + game.id + '/category/' + category.id + '?top=3&embed=players');
 			return await response.json();
 		}
 		catch (err) {
-			TTBT.createMessage(promiseData[1].channel.id, 'Failed to load speedrun.com');
-			session.speedrun.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+			TTBT.createMessage(msg.channel.id, 'Failed to load speedrun.com');
+			session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 			throw err;
 		}
 	}
 	
-	Promise.all([
-		Promise.resolve(getURL()),
-		Promise.resolve(promiseData[1]),
-		Promise.resolve([promiseData[2], promiseData[0]])
-	])
-	.then(data => printLeaderBoard(data))
-	.catch(err => {
-		TTBT.createMessage(promiseData[1].channel.id, ':x: | Per-level speedrun leaderboards are not yet available');
-		session.speedrun.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
-	})
+	TTBT.sendChannelTyping(msg.channel.id);
 	
-	delete(promiseData);
+	Promise.resolve(getURL())
+	.then(data => printLeaderBoard(data, msg, game, category))
+	.catch(err => {
+		TTBT.createMessage(msg.channel.id, ':x: | Per-level speedrun leaderboards are not yet available');
+		session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+	})
 }
 
-function printLeaderBoard(promiseData) {
+function printLeaderBoard(lbData, msg, game, category) {
 	let runners = '```Markdown\n';
-	runners += promiseData[0].data.players.data.length === 0 ? 'There are no runs for this category yet' 
-		: ' * Top 3 Speedrunners for ' + promiseData[2][0].names.international + ', ' + promiseData[2][1].name + ' * \n\n';
+	runners += lbData.data.players.data.length === 0 ? 'There are no runs for this category yet' 
+		: ' * Top 3 Speedrunners for ' + game.names.international + ', ' + category.name + ' * \n\n';
 
-	for (let i = 0; i <= promiseData[0].data.players.data.length - 1; i++) {
-		let time = promiseData[0].data.runs[i].run.times.primary;
+	for (let i = 0; i <= lbData.data.players.data.length - 1; i++) {
+		let time = lbData.data.runs[i].run.times.primary;
 		let formattedTime = time.replace('PT','').replace('H','h ').replace('M','m ').replace('S','s');
-		runners += '[' + (i + 1) + '] ' + promiseData[0].data.players.data[i].names.international + ' (' + formattedTime + ')\n';
+		runners += '[' + (i + 1) + '] ' + lbData.data.players.data[i].names.international + ' (' + formattedTime + ')\n';
 	}
 	
-	TTBT.createMessage(promiseData[1].channel.id, runners + '```');
-	
-	delete(promiseData);
-	session.speedrun.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+	TTBT.createMessage(msg.channel.id, runners + '```');
+	session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 }
 
 TTBT.registerCommandAlias("sr", "speedrun");

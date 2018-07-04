@@ -52,17 +52,14 @@ function loadAnimeList(anime, msg) {
 	
 	TTBT.sendChannelTyping(msg.channel.id);
 	
-	Promise.all([
-		Promise.resolve(getURL()),
-		Promise.resolve(msg)
-	])
+	Promise.resolve(getURL())
 	.then(data => {
-		printAnimeList(data);
+		printAnimeList(data, msg);
 		return data;
 	})
 	.then(data => {
-		if (data[0].length !== 0) 
-			getAnime(data);
+		if (data.length !== 0) 
+			getAnime(data, msg);
 	})
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "MAL has their API disabled at the moment ):.");
@@ -70,8 +67,8 @@ function loadAnimeList(anime, msg) {
 	})
 }
 
-function printAnimeList(promiseData) {
-	parseString(promiseData[0], function(err, results) {
+function printAnimeList(animeData, msg) {
+	parseString(animeData, function(err, results) {
 		let anime = '```Markdown\n';
 		anime += results.anime.entry.length === 0 ? 'No anime found with this search' : ' * Related Anime * \n\n';
 		
@@ -82,17 +79,17 @@ function printAnimeList(promiseData) {
 	
 		if (results.anime.entry.length !== 0)
 			anime += '\n' + '> Type the number of your choice into chat OR type anything else to exit the menu';
+		else
+			session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 	
-		TTBT.createMessage(promiseData[1].channel.id, anime + '```');
+		TTBT.createMessage(msg.channel.id, anime + '```');
 	});
-	
-	delete(promiseData);
 }
 
-function getAnime(promiseData) {
+function getAnime(animeData, msg) {
 	function waitForYourMessage (newMsg) {
-		parseString(promiseData[0], function(err, results) {
-			if (newMsg.author.id === promiseData[1].author.id && newMsg.channel.id === promiseData[1].channel.id) {
+		parseString(animeData, function(err, results) {
+			if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
 				if (!isNaN(newMsg.content) && newMsg.content != 0) {
 					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
 						
@@ -104,7 +101,7 @@ function getAnime(promiseData) {
 					synopsis = ("" + synopsis).replace(/&eacute;/ig, "é");
 					synopsis = ("" + synopsis).replace(/<br \/>/ig, "");
 
-					TTBT.createMessage(promiseData[1].channel.id, "**" + results.anime.entry[Number(newMsg.content) - 1].title + "**\n\n"
+					TTBT.createMessage(msg.channel.id, "**" + results.anime.entry[Number(newMsg.content) - 1].title + "**\n\n"
 						+ "**Episodes:** " + results.anime.entry[Number(newMsg.content) - 1].episodes + "\n"
 						+ "**Score:** " + results.anime.entry[Number(newMsg.content) - 1].score + "\n"
 						+ "**Type:** " + results.anime.entry[Number(newMsg.content) - 1].type + "\n" 
@@ -114,12 +111,12 @@ function getAnime(promiseData) {
 						+ "**Synopsis:** \n" + synopsis + "\n"
 						+ results.anime.entry[Number(newMsg.content) - 1].image + "\n");
 						
-					session.mal.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+					session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 				}
 				else if (newMsg.content === 'exit') { 
 					TTBT.createMessage(promiseData[1].channel.id, 'You have exited the menu');
 					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-					session.mal.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+					session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 				}
 			}
 		})
@@ -129,6 +126,6 @@ function getAnime(promiseData) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.mal.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+		session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
 }

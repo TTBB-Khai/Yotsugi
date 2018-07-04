@@ -40,18 +40,15 @@ function loadWikiList(search, msg) {
 	}
 	
 	TTBT.sendChannelTyping(msg.channel.id);
-		
-	Promise.all([
-		Promise.resolve(getURL()),
-		Promise.resolve(msg)
-	])
+	
+	Promise.resolve(getURL())
 	.then(data => {
-		printWikiList(data);
+		printWikiList(data, msg);
 		return data;
 	})
 	.then(data => {
-		if (data[0].query.search.length !== 0) 
-			getArticle(data);
+		if (data.query.search.length !== 0) 
+			getArticle(data, msg);
 	})
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "No articles found with this search.");
@@ -59,49 +56,51 @@ function loadWikiList(search, msg) {
 	})
 }
 
-function printWikiList(promiseData) {
+function printWikiList(wikiData, msg) {
 	let list = '```Markdown\n';
-	list += promiseData[0].query.search.length === 0 ? 'No articles found with this search' : ' * Related Articles * \n\n';
+	list += wikiData.query.search.length === 0 ? 'No articles found with this search' : ' * Related Articles * \n\n';
 		
-	for (let i = 0; i <= promiseData[0].query.search.length - 1; i++)
-		list += '[' + (i + 1) + '] ' + promiseData[0].query.search[i].title + '\n';
+	for (let i = 0; i <= wikiData.query.search.length - 1; i++)
+		list += '[' + (i + 1) + '] ' + wikiData.query.search[i].title + '\n';
 	
-	if (promiseData[0].query.search.length !== 0)
+	if (wikiData.query.search.length !== 0)
 		list += '\n' + '> Type the number of your choice into chat OR type "exit" to exit the menu';
+	else
+		session.wiki.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 	
-	TTBT.createMessage(promiseData[1].channel.id, list + '```');
+	TTBT.createMessage(msg.channel.id, list + '```');
 }
 
-function getArticle(promiseData) {
+function getArticle(wikiData, msg) {
 	function waitForYourMessage (newMsg) {
 		try {
-			if (newMsg.author.id === promiseData[1].author.id && newMsg.channel.id === promiseData[1].channel.id) {
+			if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
 				if (!isNaN(newMsg.content) && newMsg.content != 0) {
 					TTBT.removeListener('messageCreate', waitForYourMessage, true);
 
-					TTBT.createMessage(promiseData[1].channel.id, 
-					'**Here is your Wikipedia article on ' + promiseData[0].query.search[Number(newMsg.content) - 1].title + 
-					': __https://en.wikipedia.org/wiki/' + promiseData[0].query.search[Number(newMsg.content) - 1].title.replace(/\s/g, "_") + '__ **');
+					TTBT.createMessage(msg.channel.id, 
+					'**Here is your Wikipedia article on ' + wikiData.query.search[Number(newMsg.content) - 1].title + 
+					': __https://en.wikipedia.org/wiki/' + wikiData.query.search[Number(newMsg.content) - 1].title.replace(/\s/g, "_") + '__ **');
 					
-					session.wiki.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+					session.wiki.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 				}
 				else if (newMsg.content === 'exit') { 
-					TTBT.createMessage(promiseData[1].channel.id, 'You have exited the menu');
+					TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-					session.wiki.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+					session.wiki.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 				}
 			}
 				
 			setTimeout(() => {
 				TTBT.removeListener('messageCreate', waitForYourMessage, true);
-				session.wiki.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+				session.wiki.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 			}, 30 * 1000)
 			
 		}
 		catch (err) {
-			TTBT.createMessage(promiseData[1].channel.id, 'You have exited the menu');
+			TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 			TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-			session.wiki.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+			session.wiki.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 		}
 	}	
 	

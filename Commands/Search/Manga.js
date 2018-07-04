@@ -53,17 +53,14 @@ function loadmangaList(manga, msg) {
 	
 	TTBT.sendChannelTyping(msg.channel.id);
 	
-	Promise.all([
-		Promise.resolve(getURL()),
-		Promise.resolve(msg)
-	])
+	Promise.resolve(getURL())
 	.then(data => {
-		printmangaList(data);
+		printmangaList(data, msg);
 		return data;
 	})
 	.then(data => {
-		if (data[0].length !== 0) 
-			getmanga(data);
+		if (data.length !== 0) 
+			getmanga(data, msg);
 	})
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "MAL has their API disabled at the moment ):.");
@@ -71,8 +68,8 @@ function loadmangaList(manga, msg) {
 	})
 }
 
-function printmangaList(promiseData) {
-	parseString(promiseData[0], function(err, results) {
+function printmangaList(mangaData, msg) {
+	parseString(mangaData, function(err, results) {
 		let manga = '```Markdown\n';
 		manga += results.manga.entry.length === 0 ? 'No manga found with this search' : ' * Related manga * \n\n';
 		
@@ -81,17 +78,17 @@ function printmangaList(promiseData) {
 	
 		if (results.manga.entry.length !== 0)
 			manga += '\n' + '> Type the number of your choice into chat OR type "exit" to exit the menu';
+		else
+			session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 	
-		TTBT.createMessage(promiseData[1].channel.id, manga + '```');
+		TTBT.createMessage(msg.channel.id, manga + '```');
 	});
-	
-	delete(promiseData);
 }
 
-function getmanga(promiseData) {
+function getmanga(mangaData, msg) {
 	function waitForYourMessage (newMsg) {
-		parseString(promiseData[0], function(err, results) {
-			if (newMsg.author.id === promiseData[1].author.id && newMsg.channel.id === promiseData[1].channel.id) {
+		parseString(mangaData, function(err, results) {
+			if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
 				if (!isNaN(newMsg.content) && newMsg.content != 0) {
 					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
 						
@@ -103,7 +100,7 @@ function getmanga(promiseData) {
 					synopsis = ("" + synopsis).replace(/&eacute;/ig, "é");
 					synopsis = ("" + synopsis).replace(/<br \/>/ig, "");
 
-					TTBT.createMessage(promiseData[1].channel.id, "**" + results.manga.entry[Number(newMsg.content) - 1].title + "**\n\n"
+					TTBT.createMessage(msg.channel.id, "**" + results.manga.entry[Number(newMsg.content) - 1].title + "**\n\n"
 						+ "**Chapters:** " + results.manga.entry[Number(newMsg.content) - 1].chapters + "\n"
 						+ "**Volumes:** " + results.manga.entry[Number(newMsg.content) - 1].volumes + "\n"
 						+ "**Score:** " + results.manga.entry[Number(newMsg.content) - 1].score + "\n"
@@ -114,12 +111,12 @@ function getmanga(promiseData) {
 						+ "**Synopsis:** \n" + synopsis + "\n"
 						+ results.manga.entry[Number(newMsg.content) - 1].image + "\n");
 						
-					session.mal.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+					session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 				}
 				else if (newMsg.content === 'exit') { 
-					TTBT.createMessage(promiseData[1].channel.id, 'You have exited the menu');
+					TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-					session.mal.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+					session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 				}
 			}
 		})
@@ -129,6 +126,6 @@ function getmanga(promiseData) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.mal.user.filter(function (user) {return user.id === promiseData[1].author.id})[0].session = false;
+		session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
 }
