@@ -146,5 +146,4 @@ function printResults(lbData, challongeData, msg) {
 			+ "**Bracket Link: " + challongeData.tournament.full_challonge_url + " **");
 	
 	session.challonge.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
-	delete(promiseData);
 }

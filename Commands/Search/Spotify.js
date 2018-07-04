@@ -83,8 +83,6 @@ function printArtistList(spotifyData, msg) {
 		session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = false
 	
 	TTBT.createMessage(msg.channel.id, artists + '```');
-	
-	delete(promiseData);
 }
 
 function getArtistId(spotifyData, msg) {
@@ -108,8 +106,6 @@ function getArtistId(spotifyData, msg) {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
 		session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
-	
-	delete(promiseData);
 }
 
 function loadArtistInfo(artistData, msg) {

@@ -114,7 +114,7 @@ function getAnime(animeData, msg) {
 					session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 				}
 				else if (newMsg.content === 'exit') { 
-					TTBT.createMessage(promiseData[1].channel.id, 'You have exited the menu');
+					TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
 					session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
 				}
