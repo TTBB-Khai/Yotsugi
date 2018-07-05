@@ -8,10 +8,10 @@ var raffleCommand = TTBT.registerCommand("raffle", (msg) => {
 	if (!msg.channel.guild)
 		return "This command only works in a server.";
 	
-	if (typeof(session.raffle.guild.filter(function (server) {return server.id === msg.channel.guild.id})[0]) === 'undefined')
+	if (typeof(session.raffle.guild.filter((server) => {return server.id === msg.channel.guild.id})[0]) === 'undefined')
 		session.raffle.guild.push({"id": msg.channel.guild.id, "session": false});
 	
-	if (!session.raffle.guild.filter(function (server) {return server.id === msg.channel.guild.id})[0].session) {
+	if (!session.raffle.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].session) {
 		TTBT.createMessage(msg.channel.id, "Raffle has started! Type **'raffle'** to enter!\nRaffle ends in **60 seconds**!")
 		.then(message => wait(30000)
 		.then(() => message.channel.editMessage(message.id, "Raffle has started! Type **'raffle'** to enter!\nRaffle ends in **30 seconds**!")
@@ -24,7 +24,7 @@ var raffleCommand = TTBT.registerCommand("raffle", (msg) => {
 		))))))))
 		.catch(err => "No perms")
 		
-		session.raffle.guild.filter(function (server) {return server.id === msg.channel.guild.id})[0].session = true;
+		session.raffle.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].session = true;
 		let rafflers = [];
 		getRaffles(msg, rafflers);
 	}
@@ -120,6 +120,6 @@ function getWinner(msg, rafflers) {
 	else
 		TTBT.createMessage(msg.channel.id, "Nobody entered the raffle, so nobody wins. :frowning:");
 	
-	session.raffle.guild.filter(function (server) {return server.id === msg.channel.guild.id})[0].session = false;
+	session.raffle.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].session = false;
 	delete rafflers;
 }

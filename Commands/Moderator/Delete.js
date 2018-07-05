@@ -64,7 +64,7 @@ var deleteCommand = TTBT.registerCommand("delete", (msg, args) => {
 	}
 	
 	Promise.resolve(purgeMessages()).then(data => {
-		TTBT.createMessage(msg.channel.id, 'Deleted ' + data + ' messages.').then(function (message) {
+		TTBT.createMessage(msg.channel.id, 'Deleted ' + data + ' messages.').then((message) => {
 			setTimeout(() => message.delete(), 3000);
 		})
 	})

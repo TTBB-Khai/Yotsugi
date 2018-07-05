@@ -6,12 +6,12 @@ var speedrunCommand = TTBT.registerCommand("speedrun", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "speedrun [GAME HERE]**";
 	
-	if (typeof(session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0]) === 'undefined')
+	if (typeof(session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0]) === 'undefined')
 		session.speedrun.user.push({"id": msg.author.id, "session": false});
 	
-	if (!session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session) {
+	if (!session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session) {
 		let game = args.join(" ").replace(/\s/g, "%20");
-		session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = true;
+		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = true;
 		loadGameList(game, msg);
 	}
 	else
@@ -62,6 +62,8 @@ function printGameList(srData, msg) {
 	
 	if (srData.data.length !== 0)
 		games += '\n' + '> Type the number of your choice into chat OR type "exit" to exit the menu';
+	else
+		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	
 	TTBT.createMessage(msg.channel.id, games + '```');
 	
@@ -77,7 +79,7 @@ function getGame(srData, msg) {
 			else if (newMsg.content === 'exit') { 
 				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-				session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+				session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 			}
 		}
 	}	
@@ -86,7 +88,7 @@ function getGame(srData, msg) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
 	
 }
@@ -99,7 +101,7 @@ function loadGame(game, msg) {
 		}
 		catch (err) {
 			TTBT.createMessage(msg.channel.id, 'Failed to load speedrun.com');
-			session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+			session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 			throw err;
 		}
 	}
@@ -138,7 +140,7 @@ function getCategory(categoryData, msg, game) {
 			else if (newMsg.content === 'exit') { 
 				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-				session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+				session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 			}
 		}
 	}	
@@ -147,7 +149,7 @@ function getCategory(categoryData, msg, game) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
 }
 
@@ -159,7 +161,7 @@ function loadLeaderBoard(category, msg, game) {
 		}
 		catch (err) {
 			TTBT.createMessage(msg.channel.id, 'Failed to load speedrun.com');
-			session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+			session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 			throw err;
 		}
 	}
@@ -170,7 +172,7 @@ function loadLeaderBoard(category, msg, game) {
 	.then(data => printLeaderBoard(data, msg, game, category))
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, ':x: | Per-level speedrun leaderboards are not yet available');
-		session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	})
 }
 
@@ -186,7 +188,7 @@ function printLeaderBoard(lbData, msg, game, category) {
 	}
 	
 	TTBT.createMessage(msg.channel.id, runners + '```');
-	session.speedrun.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+	session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 }
 
 TTBT.registerCommandAlias("sr", "speedrun");

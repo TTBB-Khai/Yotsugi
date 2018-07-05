@@ -8,7 +8,7 @@ function miliseconds(hrs, min, sec) {
 }
 
 TTBT.on('guildMemberAdd', (guild, member) => {
-	if (member.createdAt <= banNewGuy.banNew.guild.filter(function (server) {return server.id === guild.id})[0].time)
+	if (member.createdAt <= banNewGuy.banNew.guild.filter((server) => {return server.id === guild.id})[0].time)
 		console.log(member.joinedAt);
 });
 
@@ -16,11 +16,11 @@ var banNewCommand = TTBT.registerCommand("banNew", (msg) => {
 	if (!msg.channel.guild)
 		return "This command only works in a server.";
 	
-	if (typeof(session.banNew.user.filter(function (user) {return user.id === msg.author.id})[0]) === 'undefined')
+	if (typeof(session.banNew.user.filter((user) => {return user.id === msg.author.id})[0]) === 'undefined')
 		session.banNew.user.push({"id": msg.author.id, "session": false});
 	
-	if (!session.banNew.user.filter(function (user) {return user.id === msg.author.id})[0].session) {
-		session.banNew.user.filter(function (user) {return user.id === msg.author.id})[0].session = true;
+	if (!session.banNew.user.filter((user) => {return user.id === msg.author.id})[0].session) {
+		session.banNew.user.filter((user) => {return user.id === msg.author.id})[0].session = true;
 		
 		TTBT.createMessage(msg.channel.id, "```Markdown\n" 
 			+ "Hi! What would you like to set up?\n\n"
@@ -49,7 +49,7 @@ function getUserAction(msg) {
 			if (newMsg.content == 1) {
 				TTBT.createMessage(msg.channel.id, "Not avaiable yet.");
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 		
-				session.banNew.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+				session.banNew.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 			}
 			else if (newMsg.content == 2) {
 				TTBT.removeListener('messageCreate', waitForYourMessage, true);
@@ -61,7 +61,7 @@ function getUserAction(msg) {
 			else if (newMsg.content === 'exit') { 
 				TTBT.createMessage(msg.channel.id, 'You have exited the menu.');
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-				session.banNew.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+				session.banNew.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 			}
 		}
 	}	
@@ -70,7 +70,7 @@ function getUserAction(msg) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.banNew.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.banNew.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
 }
 
@@ -95,13 +95,13 @@ function setTime(msg) {
 			else if (newMsg.content === 'exit') { 
 				TTBT.createMessage(msg.channel.id, 'You have exited the menu.');
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-				session.banNew.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+				session.banNew.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 			}
 		}
 	}
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.banNew.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.banNew.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
 }

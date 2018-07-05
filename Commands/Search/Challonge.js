@@ -6,11 +6,11 @@ var challongeCommand = TTBT.registerCommand("challonge", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "challonge [SUBDOMAIN HERE]**";
 	
-	if (typeof(session.challonge.user.filter(function (user) {return user.id === msg.author.id})[0]) === 'undefined')
+	if (typeof(session.challonge.user.filter((user) => {return user.id === msg.author.id})[0]) === 'undefined')
 		session.challonge.user.push({"id": msg.author.id, "session": false});
 	
-	if (!session.challonge.user.filter(function (user) {return user.id === msg.author.id})[0].session) {
-		session.challonge.user.filter(function (user) {return user.id === msg.author.id})[0].session = true;
+	if (!session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session) {
+		session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = true;
 		loadChallongeList(args.join(" "), msg);
 	}
 	else
@@ -46,12 +46,12 @@ function loadChallongeList(subdomain, msg) {
 			printChallongeList(data, msg)
 		else {
 			TTBT.createMessage(msg.channel.id, "No tournaments found with this search");
-			session.challonge.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+			session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 		}
 	})
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "If you are the owner, to set up this command, please refer to the README.");
-		session.challonge.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	})
 }
 
@@ -61,7 +61,7 @@ function printChallongeList(challongeData, msg) {
 		: " * Recent Tournaments for " + (challongeData[0].tournament.subdomain).toUpperCase() + " * \n\n";
 	
 	let listLength = challongeData.length < 9 ? challongeData.length - 1 : 9;
-	let sortedList = challongeData.sort(function(a,b){return new Date(b.tournament.created_at) > new Date(a.tournament.created_at) ? 1 : -1});
+	let sortedList = challongeData.sort((a,b) => {return new Date(b.tournament.created_at) > new Date(a.tournament.created_at) ? 1 : -1});
 		
 	for (let i = 0; i <= listLength; i++)
 		tournaments += "[" + (i + 1) + "] " + sortedList[i].tournament.name + " (Game: " + sortedList[i].tournament.game_name + ")\n";
@@ -83,7 +83,7 @@ function getTournament(sortedList, msg) {
 			else if (newMsg.content === 'exit') { 
 				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-				session.challonge.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+				session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 			}
 		}
 	}	
@@ -92,7 +92,7 @@ function getTournament(sortedList, msg) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.challonge.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
 }
 
@@ -112,7 +112,7 @@ function loadTournament(sortedList, challongeData, msg) {
 	.then(data => printResults(data, challongeData, msg))
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "Something went wrong :/");
-		session.challonge.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	})
 }
 
@@ -133,7 +133,7 @@ function printResults(lbData, challongeData, msg) {
 	if (ranks.rank.length > 0) {
 		let range = ranks.rank.length < 8 ? ranks.rank.length : 8;
 		
-		let sortedRanks = ranks.rank.sort(function(a, b){return a.placing - b.placing});
+		let sortedRanks = ranks.rank.sort((a, b) => {return a.placing - b.placing});
 		
 		for (let i = 0; i < range; i++)
 			results += "[" + sortedRanks[i].placing + "] " + sortedRanks[i].player + "\n";
@@ -145,5 +145,5 @@ function printResults(lbData, challongeData, msg) {
 		TTBT.createMessage(msg.channel.id, "This tournament is still ongoing\n```\n" 
 			+ "**Bracket Link: " + challongeData.tournament.full_challonge_url + " **");
 	
-	session.challonge.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+	session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 }

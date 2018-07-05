@@ -7,12 +7,12 @@ var lyricsCommand = TTBT.registerCommand("lyrics", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "lyrics [SONG HERE]**";
 	
-	if (typeof(session.genius.user.filter(function (user) {return user.id === msg.author.id})[0]) === 'undefined')
+	if (typeof(session.genius.user.filter((user) => {return user.id === msg.author.id})[0]) === 'undefined')
 		session.genius.user.push({"id": msg.author.id, "session": false});
 	
-	if (!session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session) {
+	if (!session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session) {
 		let song = args.join(" ").replace(/\s/g, "%20");
-		session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session = true;
+		session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = true;
 		loadSongList(song, msg);
 	}
 	else
@@ -53,7 +53,7 @@ function loadSongList(song, msg) {
 	})
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "If you are the owner, to set up this command, please refer to the README.");
-		session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	})
 }
 
@@ -67,7 +67,7 @@ function printSongList(songData, msg) {
 	if (songData.response.hits.length !== 0)
 		songs += '\n' + '> Type the number of your choice into chat OR type "cancel" to exit the menu';
 	else
-		session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	
 	TTBT.createMessage(msg.channel.id, songs + '```');
 }
@@ -82,7 +82,7 @@ function getSong(songData, msg) {
 			else if (newMsg.content === 'exit') { 
 				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-				session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+				session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 			}
 		}
 	}	
@@ -91,7 +91,7 @@ function getSong(songData, msg) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
 }
 
@@ -115,7 +115,7 @@ function loadLyrics(song, msg) {
 	.then(data => printLyrics(data, msg, song))
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "No songs found with this search.");
-		session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	})
 }
 
@@ -124,7 +124,7 @@ function printLyrics(lyricData, msg, song) {
 	: 'These lyrics are too long to fit in a discord message ):\n **Here is a link to the full lyrics: ' + song.result.url + '**';
 	
 	TTBT.createMessage(msg.channel.id, output);
-	session.genius.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+	session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 }
 
 TTBT.registerCommandAlias("lyric", "lyrics");

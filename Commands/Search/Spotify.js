@@ -14,12 +14,12 @@ var spotifyCommand = TTBT.registerCommand("spotify", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "spotify [ARTIST HERE]**";
 	
-	if (typeof(session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0]) === 'undefined')
+	if (typeof(session.spotify.user.filter((user) => {return user.id === msg.author.id})[0]) === 'undefined')
 		session.spotify.user.push({"id": msg.author.id, "session": false});
 	
-	if (!session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session) {
+	if (!session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session) {
 		let artist = args.join(" ").replace(/\s/g, "%20");
-		session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = true;
+		session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = true;
 		loadArtistList(artist, msg);
 	}
 	else
@@ -66,7 +66,7 @@ function loadArtistList(artist, msg) {
 	})
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "If you are the owner, to set up this command, please refer to the README.")
-		session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = false
+		session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false
 	})
 }
 
@@ -80,7 +80,7 @@ function printArtistList(spotifyData, msg) {
 	if (spotifyData.artists.items.length !== 0)
 		artists += '\n' + '> Type the number of your choice into chat OR "exit" else to exit the menu';
 	else
-		session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = false
+		session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false
 	
 	TTBT.createMessage(msg.channel.id, artists + '```');
 }
@@ -95,7 +95,7 @@ function getArtistId(spotifyData, msg) {
 			else if (newMsg.content === 'exit') { 
 				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-				session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+				session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false
 			}
 		}
 	}	
@@ -104,11 +104,11 @@ function getArtistId(spotifyData, msg) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false
 	}, 30 * 1000)
 }
 
 function loadArtistInfo(artistData, msg) {
 	TTBT.createMessage(msg.channel.id, artistData.external_urls.spotify);
-	session.spotify.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+	session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false
 }

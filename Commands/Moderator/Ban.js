@@ -15,8 +15,8 @@ var banCommand = TTBT.registerCommand("ban", (msg, args) => {
 	if (reasonToBan.length > 450) 
 		return "Your reason must be under 450 characters."
 	
-	let getUser = msg.channel.guild.members.filter(function (mems) { 
-		return (mems.username.toLowerCase() === userToBan.toLowerCase()) || (mems.id === userToBan);
+	let getUser = msg.channel.guild.members.filter((mems) => { 
+		return (mems.username.toLowerCase() === userToBan.toLowerCase()) || (mems.id === userToBan)
 	});
 	let user = "No user found";
 

@@ -10,12 +10,12 @@ var animeCommand = TTBT.registerCommand("anime", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: "  + process.env['CLIENT_PREFIX'] + "**anime [ANIME TITLE HERE]**";
 	
-	if (typeof(session.mal.user.filter(function (user) {return user.id === msg.author.id})[0]) === 'undefined')
+	if (typeof(session.mal.user.filter((user) => {return user.id === msg.author.id})[0]) === 'undefined')
 		session.mal.user.push({"id": msg.author.id, "session": false});
 	
-	if (!session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session) {
+	if (!session.mal.user.filter((user) => {return user.id === msg.author.id})[0].session) {
 		let anime = args.join(" ").replace(/\s/g, "%20");
-		session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = true;
+		session.mal.user.filter((user) => {return user.id === msg.author.id})[0].session = true;
 		loadAnimeList(anime, msg);
 	}
 	else
@@ -63,12 +63,12 @@ function loadAnimeList(anime, msg) {
 	})
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "MAL has their API disabled at the moment ):.");
-		session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.mal.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	})
 }
 
 function printAnimeList(animeData, msg) {
-	parseString(animeData, function(err, results) {
+	parseString(animeData, (err, results) => {
 		let anime = '```Markdown\n';
 		anime += results.anime.entry.length === 0 ? 'No anime found with this search' : ' * Related Anime * \n\n';
 		
@@ -80,7 +80,7 @@ function printAnimeList(animeData, msg) {
 		if (results.anime.entry.length !== 0)
 			anime += '\n' + '> Type the number of your choice into chat OR type anything else to exit the menu';
 		else
-			session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+			session.mal.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	
 		TTBT.createMessage(msg.channel.id, anime + '```');
 	});
@@ -88,7 +88,7 @@ function printAnimeList(animeData, msg) {
 
 function getAnime(animeData, msg) {
 	function waitForYourMessage (newMsg) {
-		parseString(animeData, function(err, results) {
+		parseString(animeData, (err, results) => {
 			if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
 				if (!isNaN(newMsg.content) && newMsg.content != 0) {
 					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
@@ -111,12 +111,12 @@ function getAnime(animeData, msg) {
 						+ "**Synopsis:** \n" + synopsis + "\n"
 						+ results.anime.entry[Number(newMsg.content) - 1].image + "\n");
 						
-					session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+					session.mal.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 				}
 				else if (newMsg.content === 'exit') { 
 					TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-					session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+					session.mal.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 				}
 			}
 		})
@@ -126,6 +126,6 @@ function getAnime(animeData, msg) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitForYourMessage);
-		session.mal.user.filter(function (user) {return user.id === msg.author.id})[0].session = false;
+		session.mal.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
 }

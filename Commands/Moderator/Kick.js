@@ -5,8 +5,8 @@ var banCommand = TTBT.registerCommand("kick", (msg, args) => {
 	let kickPerms = msg.channel.guild.members.get(TTBT.user.id).permission.has("kickMembers");
 	if (!kickPerms) return "I do not have permission to kick users in this server."
 	
-	let getUser = msg.channel.guild.members.filter(function (mems) { 
-		return (mems.username.toLowerCase() === args.join(" ").toLowerCase()) || (mems.id === args.join(" "));
+	let getUser = msg.channel.guild.members.filter((mems) => { 
+		return (mems.username.toLowerCase() === args.join(" ").toLowerCase()) || (mems.id === args.join(" "))
 	});
 	let user = "No user found.";
 
