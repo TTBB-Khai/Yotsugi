@@ -18,9 +18,8 @@ var banCommand = TTBT.registerCommand("ban", (msg, args) => {
 	let getUser = msg.channel.guild.members.filter((mems) => { 
 		return (mems.username.toLowerCase() === userToBan.toLowerCase()) || (mems.id === userToBan)
 	});
-	let user = "No user found";
 
-	user = msg.mentions.length > 0 ? msg.mentions[0] : getUser.length > 0 ? getUser[0].user : "No user found.";
+	let user = msg.mentions.length > 0 ? msg.mentions[0] : getUser.length > 0 ? getUser[0].user : "No user found.";
 	
 	if (user === "No user found.")
 		return user;

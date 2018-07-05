@@ -61,6 +61,8 @@ var helpCommand = TTBT.registerCommand("help", (msg) => {
 				+ "<obama - Obama pulls up a sign saying something>\n"
 				+ "<joseph - \"Next you'll say...\">\n"
 				+ "<kill - Yotsuba shoots someone>\n\n"
+				+ " * Owner *\n"
+				+ "<token - Gives you a Spotify refresh token OR refreshes your current access token>\n\n"
 				+ "Type " + process.env['CLIENT_PREFIX'] + "<help command> for more information on a command\n"
 				+ "Example: " + process.env['CLIENT_PREFIX'] + "help ping"
 				+ "```");
@@ -815,6 +817,29 @@ helpCommand.registerSubcommand("spotify", (msg) => {
 		}
 	}
 );
+
+helpCommand.registerSubcommand("token", (msg) => {
+	return "```Markdown\n"
+			+ "**Token**\n\n"
+			+ " * Description *\n"
+			+ "OWNER ONLY COMMAND!\n"
+			+ "Gives you a spotify refresh token or refreshes your current access token.\n"
+			+ "Please refer to the README if you have any issues setting up the command.\n"
+			+ " * Arguments *\n"
+			+ "<none>\n"
+			+ " * Examples *\n"
+			+ process.env['CLIENT_PREFIX'] + "token \n"
+			+ "```";
+},	{
+		caseInsensitive: true,
+		cooldown: 3000,
+		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
+		requirements: {
+			"manageMessages": true
+		}
+	}
+);
+
 
 helpCommand.registerSubcommand("gif", (msg) => {
 	return "```Markdown\n"

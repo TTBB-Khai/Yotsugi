@@ -2,10 +2,6 @@ const path = require('path')
 const spotify = require(path.join(process.cwd(), 'res', 'data', 'spotify.json'));
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 const fetch = require('node-fetch');
-const express = require("express");
-const request = require("request");
-
-const app = express();
 
 const userpass = process.env['SPOTIFY_CLIENT_ID'] + ':' + process.env['SPOTIFY_CLIENT_SECRET'];
 const basicAuth = 'Basic ' + Buffer.from(userpass).toString('base64');
