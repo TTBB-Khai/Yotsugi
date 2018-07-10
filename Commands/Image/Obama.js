@@ -45,7 +45,8 @@ var obamaCommand = TTBT.registerCommand("obama", (msg, args) => {
 		.draw(["rotate -6 text 20,120  " + text])
 		.toBuffer(function (err, buf) {
 			if (err) {
-				console.log(err);
+				if (msg.author.id === process.env['CLIENT_OWNERID'])
+					TTBT.createMessage(msg.channel.id, "You have not set up the use of GraphicsMagick on your system!\n See the README for more info.");
 				return;
 			}
 			 TTBT.createMessage(msg.channel.id, '', {file: buf, name: 'obama.png'});

@@ -52,7 +52,9 @@ function loadSongList(song, msg) {
 			getSong(data, msg);
 	})
 	.catch(err => {
-		TTBT.createMessage(msg.channel.id, "If you are the owner, to set up this command, please refer to the README.");
+		if (msg.author.id === process.env['CLIENT_OWNERID'])
+			TTBT.createMessage(msg.channel.id, "You have not set up this command! To do so, please refer to the README.");
+		throw err;
 		session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	})
 }

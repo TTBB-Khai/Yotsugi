@@ -61,6 +61,8 @@ function getData(user, msg) {
 			TTBT.createMessage(msg.channel.id, "**User not found!**");
 	})
 	.catch(err => {
-		TTBT.createMessage(msg.channel.id, "If you are the owner, to set up this command, please refer to the README.");
+		if (msg.author.id === process.env['CLIENT_OWNERID'])
+			TTBT.createMessage(msg.channel.id, "You have not set up this command! To do so, please refer to the README.");
+		throw err;
 	})
 }
