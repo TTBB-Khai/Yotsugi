@@ -59,6 +59,8 @@ function loadArtistList(artist, msg) {
 	.then(response => {
 		if (response.artists.items.length !== 0) 
 			getArtistId(response, msg);
+		else
+			session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	})
 	.catch(err => {
 		if (msg.author.id === process.env['CLIENT_OWNERID'])
@@ -78,7 +80,7 @@ function printArtistList(spotifyData, msg) {
 		artists += '[' + (i + 1) + '] ' + spotifyData.artists.items[i].name + ' (Genre: ' + spotifyData.artists.items[i].genres[0] + ')\n';
 	
 	if (spotifyData.artists.items.length !== 0)
-		artists += '\n' + '> Type the number of your choice into chat OR "exit" else to exit the menu';
+		artists += '\n' + '> Type the number of your choice into chat OR type "exit" to exit the menu';
 	else
 		session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false
 	
