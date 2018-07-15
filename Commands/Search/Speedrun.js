@@ -1,6 +1,9 @@
+//'use strict';
+
 const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 const fetch = require('node-fetch');
+global.Promise = require('bluebird');
 
 var speedrunCommand = TTBT.registerCommand("speedrun", (msg, args) => {
 	if(args.length === 0)
@@ -28,29 +31,32 @@ var speedrunCommand = TTBT.registerCommand("speedrun", (msg, args) => {
 );
 
 function loadGameList(game, msg) {
-	async function getURL() {
-		try {
-			let response = await fetch('https://www.speedrun.com/api/v1/games?orderby=released&direction=asc&name=' + game + '&max=10');
-			return await response.json();
-		}
-		catch (err) {
-			TTBT.createMessage(msg.channel.id, "Failed to load speedrun.com");
-			throw err;
-		}
-	}
-		
+	
 	TTBT.sendChannelTyping(msg.channel.id);
 		
-	Promise.resolve(getURL())
-	.then(data => {
-		printGameList(data, msg);
-		return data;
+	fetch('https://www.speedrun.com/api/v1/games?orderby=released&direction=asc&name=' + game + '&max=10')
+	.then((response, err) => {
+		if (response.ok)
+			return response.json();
+		else {
+			session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			throw new TypeError("No JSON to parse!");
+		}
 	})
-	.then(data => {
-		if (data.data.length !== 0) 
-			getGame(data, msg);
+	.then(response => {
+		printGameList(response, msg);
+		return response;
 	})
-	.catch(err => TTBT.createMessage(msg.channel.id, "No games found with this search."))
+	.then(response => {
+		if (response.data.length !== 0) 
+			getGame(response, msg);
+		else
+			session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+	})
+	.catch(err => {
+		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+		TTBT.createMessage(msg.channel.id, "No games found with this search.");
+	})
 }
 
 function printGameList(srData, msg) {
@@ -94,29 +100,29 @@ function getGame(srData, msg) {
 }
 
 function loadGame(game, msg) {
-	async function getURL() {
-		try {
-			let response = await fetch('https://www.speedrun.com/api/v1/games/' + game.id + '/categories?type=per-game');
-			return await response.json();
-		}
-		catch (err) {
-			TTBT.createMessage(msg.channel.id, 'Failed to load speedrun.com');
-			session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
-			throw err;
-		}
-	}
-	
+
 	TTBT.sendChannelTyping(msg.channel.id);
 	
-	Promise.resolve(getURL())
-	.then(data => {
-		printCategories(data, msg);
-		return data;
+	fetch('https://www.speedrun.com/api/v1/games/' + game.id + '/categories?type=per-game')
+	.then((response, err) => {
+		if (response.ok)
+			return response.json();
+		else {
+			session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			throw new TypeError("No JSON to parse!");
+		}
 	})
-	.then(data => {
-		getCategory(data, msg, game);
+	.then(response => {
+		printCategories(response, msg);
+		return response;
 	})
-	.catch(err => TTBT.createMessage(msg.channel.id, 'Something went wrong :/'))
+	.then(response => {
+		getCategory(response, msg, game);
+	})
+	.catch(err => {
+		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+		TTBT.createMessage(msg.channel.id, 'Something went wrong :/');
+	})
 }
 
 function printCategories(categoryData, msg) {
@@ -154,22 +160,19 @@ function getCategory(categoryData, msg, game) {
 }
 
 function loadLeaderBoard(category, msg, game) {
-	async function getURL() {
-		try {
-			let response = await fetch('https://www.speedrun.com/api/v1/leaderboards/' + game.id + '/category/' + category.id + '?top=3&embed=players');
-			return await response.json();
-		}
-		catch (err) {
-			TTBT.createMessage(msg.channel.id, 'Failed to load speedrun.com');
-			session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
-			throw err;
-		}
-	}
-	
+
 	TTBT.sendChannelTyping(msg.channel.id);
 	
-	Promise.resolve(getURL())
-	.then(data => printLeaderBoard(data, msg, game, category))
+	fetch('https://www.speedrun.com/api/v1/leaderboards/' + game.id + '/category/' + category.id + '?top=3&embed=players')
+	.then((response, err) => {
+		if (response.ok)
+			return response.json();
+		else {
+			session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			throw new TypeError("No JSON to parse!");
+		}
+	})
+	.then(response => printLeaderBoard(response, msg, game, category))
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, ':x: | Per-level speedrun leaderboards are not yet available');
 		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;

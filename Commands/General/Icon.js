@@ -1,3 +1,5 @@
+//'use strict';
+
 var iconCommand = TTBT.registerCommand("icon", (msg) => {
     return msg.channel.guild ? msg.channel.guild.iconURL : "This command only works in a server";
 },	{

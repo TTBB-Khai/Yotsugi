@@ -1,3 +1,5 @@
+//'use strict';
+
 const Eris = require("eris");
 const winston = require('winston');
 const path = require('path');
@@ -6,13 +8,6 @@ require('dotenv-safe').config({
   path: path.join(process.cwd(), '.env'),
   allowEmptyValues: true
 })
-
-var Promise;
-try {
-  Promise = require('bluebird');
-} catch (err) {
-  Promise = global.Promise;
-}
 
 const logger = new (winston.Logger)({
   transports: [

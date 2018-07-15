@@ -1,3 +1,5 @@
+//'use strict';
+
 var banCommand = TTBT.registerCommand("ban", (msg, args) => {
 	if (args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "ban [USER]**";
@@ -23,11 +25,10 @@ var banCommand = TTBT.registerCommand("ban", (msg, args) => {
 	
 	if (user === "No user found.")
 		return user;
-	else {
-		TTBT.banGuildMember(msg.channel.guild.id, user.id, 0, reasonToBan)
-		.then(() => TTBT.createMessage(msg.channel.id, user.mention + " has been banned" + reasonToBan + "."))
-		.catch(err => TTBT.createMessage(msg.channel.id, "This user could not be banned."))	
-	}
+	
+	TTBT.banGuildMember(msg.channel.guild.id, user.id, 0, reasonToBan)
+	.then(() => TTBT.createMessage(msg.channel.id, user.mention + " has been banned" + reasonToBan + "."))
+	.catch(err => TTBT.createMessage(msg.channel.id, "This user could not be banned."))	
 	
 },	{
 		caseInsensitive: true,

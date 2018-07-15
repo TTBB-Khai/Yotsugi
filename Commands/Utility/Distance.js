@@ -1,3 +1,5 @@
+//'use strict';
+
 var distanceCommand = TTBT.registerCommand("distance", (msg, args) => {
 	if (args.length === 0) 
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "distance [NUMBER HERE] [K/M]**";
@@ -21,8 +23,8 @@ var distanceCommand = TTBT.registerCommand("distance", (msg, args) => {
 		result = Math.round(result * 100) / 100;
 		return ":rocket: | **" + result + " KM**";
 	}
-	else 
-		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "distance [NUMBER HERE] [K/M]**";
+	
+	return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "distance [NUMBER HERE] [K/M]**";
 },	{
 		cooldown: 3000,
 		caseInsensitive: true,

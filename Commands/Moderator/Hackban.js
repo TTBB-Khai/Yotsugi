@@ -1,3 +1,5 @@
+//'use strict';
+
 var hackbanCommand = TTBT.registerCommand("hackban", (msg, args) => {
 	if (args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "hackban [USER ID]**";

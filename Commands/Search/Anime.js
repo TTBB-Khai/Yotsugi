@@ -1,7 +1,10 @@
+//'use strict';
+
 const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 const fetch = require('node-fetch');
 const parseString = require('xml2js').parseString;
+global.Promise = require('bluebird');
 
 const userpass = process.env['MAL_USERNAME'] + ':' + process.env['MAL_PASSWORD'];
 const basicAuth = 'Basic ' + Buffer.from(userpass).toString('base64');
@@ -31,35 +34,35 @@ var animeCommand = TTBT.registerCommand("anime", (msg, args) => {
 );
 
 function loadAnimeList(anime, msg) {
-	async function getURL() {
-		try {
-			let response = await fetch('https://myanimelist.net/api/anime/search.xml?q=' + anime, { 
-				method: 'GET', 
-				headers: {
-					'Authorization': basicAuth,
-					'Content-Type': 'application/xml',
-					'encoding': 'UTF-8',
-					'version': '1.0'
-				}
-			})
-			return response.text();
-		}
-		catch (err) {
-			TTBT.createMessage(msg.channel.id, "Failed to load myanimelist.net");
-			throw err;
-		}
-	}
 	
 	TTBT.sendChannelTyping(msg.channel.id);
 	
-	Promise.resolve(getURL())
-	.then(data => {
-		printAnimeList(data, msg);
-		return data;
+	fetch('https://myanimelist.net/api/anime/search.xml?q=' + anime, { 
+		method: 'GET', 
+		headers: {
+			'Authorization': basicAuth,
+			'Content-Type': 'application/xml',
+			'encoding': 'UTF-8',
+			'version': '1.0'
+		}
 	})
-	.then(data => {
-		if (data.length !== 0) 
-			getAnime(data, msg);
+	.then((response, err) => {
+		if (response.ok)
+			return response.text();
+		else {
+			session.mal.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			throw new TypeError("No XML to parse!");
+		}
+	})
+	.then(response => {
+		printAnimeList(response, msg);
+		return response;
+	})
+	.then(response => {
+		if (response.length !== 0) 
+			getAnime(response, msg);
+		else
+			session.mal.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	})
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "MAL has their API disabled at the moment ):.");

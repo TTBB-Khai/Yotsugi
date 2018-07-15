@@ -1,3 +1,5 @@
+//'use strict';
+
 var unbanCommand = TTBT.registerCommand("unban", (msg, args) => {
 	if (args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "unban [USER ID]**";

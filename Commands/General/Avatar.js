@@ -1,3 +1,5 @@
+//'use strict';
+
 var avatarCommand = TTBT.registerCommand("avatar", (msg, args) => {
 	if (!msg.channel.guild)
 		return msg.mentions.length > 0 ? msg.mentions[0].avatarURL : msg.author.avatarURL;

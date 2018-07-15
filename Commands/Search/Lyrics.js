@@ -1,7 +1,10 @@
+//'use strict';
+
 const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
+global.Promise = require('bluebird');
 
 var lyricsCommand = TTBT.registerCommand("lyrics", (msg, args) => {
 	if(args.length === 0)
@@ -29,31 +32,33 @@ var lyricsCommand = TTBT.registerCommand("lyrics", (msg, args) => {
 );
 
 function loadSongList(song, msg) {
-	async function getURL() {
-		try {
-			let response = await fetch('https://api.genius.com/search?q=' + song + '&access_token=' + process.env['GENIUS_ACCESS_TOKEN']);
-			return await response.json();
-		}
-		catch (err) {
-			TTBT.createMessage(msg.channel.id, "Failed to load genius.com");
-			throw err;
-		}
-	}
-		
+
 	TTBT.sendChannelTyping(msg.channel.id);
 		
-	Promise.resolve(getURL())
-	.then(data => {
-		printSongList(data, msg);
-		return data;
+	fetch('https://api.genius.com/search?q=' + song + '&access_token=' + process.env['GENIUS_ACCESS_TOKEN'])
+	.then((response, err) => {
+		if (response.ok)
+			return response.json();
+		else {
+			session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			throw new TypeError("No JSON to parse!");
+		}
 	})
-	.then(data => {
-		if (data.response.hits.length !== 0) 
-			getSong(data, msg);
+	.then(response => {
+		printSongList(response, msg);
+		return response;
+	})
+	.then(response => {
+		if (response.response.hits.length !== 0) 
+			getSong(response, msg);
+		else
+			session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	})
 	.catch(err => {
 		if (msg.author.id === process.env['CLIENT_OWNERID'])
 			TTBT.createMessage(msg.channel.id, "You have not set up this command! To do so, please refer to the README.");
+		else
+			TTBT.createMessage(msg.channel.id, "The owner of this bot does not have this command enabled yet!");
 		throw err;
 		session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	})
@@ -67,7 +72,7 @@ function printSongList(songData, msg) {
 		songs += '[' + (i + 1) + '] ' + songData.response.hits[i].result.full_title + '\n';
 	
 	if (songData.response.hits.length !== 0)
-		songs += '\n' + '> Type the number of your choice into chat OR type "cancel" to exit the menu';
+		songs += '\n' + '> Type the number of your choice into chat OR type "exit" to exit the menu';
 	else
 		session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	
@@ -101,7 +106,7 @@ function loadLyrics(song, msg) {
 	async function getURL() {
 		try {
 			let response = await fetch(song.result.url);
-			let text = await response.text();
+			let text = response.text();
 			let $ = cheerio.load(text);
 			return $('.lyrics').text().trim();
 		}

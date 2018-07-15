@@ -1,3 +1,5 @@
+//'use strict';
+
 const path = require('path');
 const { delay: wait } = require(path.join(process.cwd(), 'Utils', 'Delay.js'));
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
@@ -28,8 +30,8 @@ var raffleCommand = TTBT.registerCommand("raffle", (msg) => {
 		let rafflers = [];
 		getRaffles(msg, rafflers);
 	}
-	else 
-		return ":x: | There is already a raffle in this server!";	
+	
+	return ":x: | There is already a raffle in this server!";	
 	
 },	{
 		cooldown: 5000,

@@ -1,4 +1,7 @@
+//'use strict';
+
 const fetch = require('node-fetch');
+global.Promise = require('bluebird');
 
 var osuCommand = TTBT.registerCommand("osu", (msg, args) => {
 	if(args.length === 0)
@@ -19,18 +22,16 @@ var osuCommand = TTBT.registerCommand("osu", (msg, args) => {
 
 function getData(user, msg) {
 	
-	async function getURL() {
-		try {
-			let response = await fetch('https://osu.ppy.sh/api/get_user?u=' + user + '&k=' + process.env['OSU_API_KEY'] + '&m=0');
-			return await response.json();
-		}
-		catch(err) {
-			TTBT.createMessage(msg.channel.id, "Failed to load osu.ppy.sh");
-			throw err;
-		}
-	}
-	
-	Promise.resolve(getURL()).then(data => {
+	TTBT.sendChannelTyping(msg.channel.id);
+
+	fetch('https://osu.ppy.sh/api/get_user?u=' + user + '&k=' + process.env['OSU_API_KEY'] + '&m=0')
+	.then((response, err) => {
+		if (response.ok)
+			return response.json();
+		else 
+			throw new TypeError("No JSON to parse!");
+	})
+	.then(data => {
 		if (data.length > 0) {
 			TTBT.createMessage(msg.channel.id, "```Markdown\n" 
 				+ " * USER INFO *\n" 
@@ -63,6 +64,8 @@ function getData(user, msg) {
 	.catch(err => {
 		if (msg.author.id === process.env['CLIENT_OWNERID'])
 			TTBT.createMessage(msg.channel.id, "You have not set up this command! To do so, please refer to the README.");
+		else
+			TTBT.createMessage(msg.channel.id, "The owner of this bot does not have this command enabled yet!");
 		throw err;
 	})
 }

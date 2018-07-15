@@ -1,6 +1,10 @@
+//'use strict';
+
 const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 const fetch = require('node-fetch');
+
+global.Promise = require('bluebird');
 
 var challongeCommand = TTBT.registerCommand("challonge", (msg, args) => {
 	if(args.length === 0)
@@ -27,33 +31,33 @@ var challongeCommand = TTBT.registerCommand("challonge", (msg, args) => {
 );
 
 function loadChallongeList(subdomain, msg) {
-	async function getURL() {
-		try {
-			let response = await fetch('https://api.challonge.com/v1/tournaments.json?api_key=' + process.env['CHALLONGE_API_KEY'] + '&state=ended&subdomain=' + subdomain);
-			return await response.json();
-		}
-		catch (err) {
-			TTBT.createMessage(msg.channel.id, "Failed to load challonge.com");
-			throw err;
-		}
-	}
 	
 	TTBT.sendChannelTyping(msg.channel.id);
-		
-	Promise.resolve(getURL())
-	.then(data => {
-		if (!data.hasOwnProperty('errors'))
-			printChallongeList(data, msg)
+	
+	fetch('https://api.challonge.com/v1/tournaments.json?api_key=' + process.env['CHALLONGE_API_KEY'] + '&state=ended&subdomain=' + subdomain)
+	.then((response, err) => {
+		if (response.ok)
+			return response.json();
+		else {
+			session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			throw new TypeError("No JSON to parse!");
+		}
+	})
+	.then((response) => {
+		if (!response.hasOwnProperty('errors'))
+			printChallongeList(response, msg)
 		else {
 			TTBT.createMessage(msg.channel.id, "No tournaments found with this search");
 			session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 		}
 	})
-	.catch(err => {
+	.catch((err) => {
 		if (msg.author.id === process.env['CLIENT_OWNERID'])
 			TTBT.createMessage(msg.channel.id, "You have not set up this command! To do so, please refer to the README.");
-		throw err;
+		else
+			TTBT.createMessage(msg.channel.id, "The owner of this bot does not have this command enabled yet!");
 		session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+		return Promise.reject();
 	})
 }
 
@@ -68,7 +72,7 @@ function printChallongeList(challongeData, msg) {
 	for (let i = 0; i <= listLength; i++)
 		tournaments += "[" + (i + 1) + "] " + sortedList[i].tournament.name + " (Game: " + sortedList[i].tournament.game_name + ")\n";
 	
-	tournaments += "\n" + "> Type the number of your choice into chat OR type 'cancel' to exit the menu```";
+	tournaments += "\n" + "> Type the number of your choice into chat OR type 'exit' to exit the menu```";
 	TTBT.createMessage(msg.channel.id, tournaments);
 	
 	getTournament(sortedList, msg);
@@ -99,19 +103,17 @@ function getTournament(sortedList, msg) {
 }
 
 function loadTournament(sortedList, challongeData, msg) {
-	async function getURL() {
-		try {
-			let response = await fetch('https://api.challonge.com/v1/tournaments/' + sortedList[0].tournament.subdomain + '-' + challongeData.tournament.url + '/participants.json?api_key=' + process.env['CHALLONGE_API_KEY'] + '&subdomain=' + sortedList[0].tournament.subdomain);
-			return await response.json();
-		}
-		catch (err) {
-			TTBT.createMessage(msg.channel.id, "Failed to load challonge.com");
-			throw err;
-		}
-	}
 	
-	Promise.resolve(getURL())
-	.then(data => printResults(data, challongeData, msg))
+	fetch('https://api.challonge.com/v1/tournaments/' + sortedList[0].tournament.subdomain + '-' + challongeData.tournament.url + '/participants.json?api_key=' + process.env['CHALLONGE_API_KEY'] + '&subdomain=' + sortedList[0].tournament.subdomain)
+	.then((response, err) => {
+		if (response.ok)
+			return response.json();
+		else {
+			session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			throw new TypeError("No JSON to parse!");
+		}
+	})
+	.then(response => printResults(response, challongeData, msg))
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, "Something went wrong :/");
 		session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = false;

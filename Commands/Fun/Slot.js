@@ -1,10 +1,11 @@
+//'use strict';
+
 var slotCommand = TTBT.registerCommand("slot", (msg, args) => {
-	if (isNaN(args.join(" "))) {
+	if (isNaN(args.join(" ")))
 		return  "``" + args.join(" ") + "`` is not a number";
-	}
 	
 	let imageValue = [":cherries:", ":apple:", ":watermelon:", ":eggplant:", ":bell:",
-				":chocolate_bar:", ":tangerine:", ":melon:", ":banana:", ":grapes:", ":pear:", ":gem:"];
+					":chocolate_bar:", ":tangerine:", ":melon:", ":banana:", ":grapes:", ":pear:", ":gem:"];
 	const THREE_MATCHES = 10;
 	const TWO_MATCHES = 5;
 	let selectedImages = [];
@@ -12,9 +13,8 @@ var slotCommand = TTBT.registerCommand("slot", (msg, args) => {
 	let output2 = "";
 	let bitAmount = args.length === 0 ? 1 : args.join(" ");
 	
-	if (bitAmount < 0) {
+	if (bitAmount < 0)
 		return "You must bet a number higher than 0";
-	}
 	
 	for (let i = 0; i <= 2; i++) {
 		let randomNumber = ~~(Math.random() * (imageValue.length - 1 + 1)) + 0;
@@ -44,9 +44,6 @@ var slotCommand = TTBT.registerCommand("slot", (msg, args) => {
 	return "**. . . S L O T S . . .** \n"
 		+ "**||** " + output + " **||**\n"
 		+ output2;
-		
-	delete imageValue;
-	delete selectedImages;
 	
 }, 	{
 		cooldown: 5000,

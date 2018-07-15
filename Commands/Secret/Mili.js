@@ -1,3 +1,5 @@
+//'use strict';
+
 var miliCommand = TTBT.registerCommand("mili", (msg) => {
 	let song = ~~(Math.random() * (28 - 1 + 1)) + 1;
 	switch(song) {

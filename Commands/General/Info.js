@@ -1,3 +1,5 @@
+//'use strict';
+
 var infoCommand = TTBT.registerCommand("info", (msg) => {
 	return "```Markdown\n * "
 			+ "BOT INFO *\n"

@@ -1,3 +1,5 @@
+//'use strict';
+
 var drinkCommand = TTBT.registerCommand("drink", (msg, args) => {
 	let drink = ~~(Math.random() * (10 - 1 + 1)) + 1; // Generates random number from 1-10
 	let user = msg.mentions.length > 0 ? msg.mentions[0].mention : msg.author.mention;

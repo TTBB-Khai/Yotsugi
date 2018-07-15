@@ -1,22 +1,20 @@
+//'use strict';
+
 var fishCommand = TTBT.registerCommand("fish", (msg, args) => {
-	let fish = ~~(Math.random() * (10000 - 1 + 1)) + 1; // Generates random number from 0-1
+	let fish = ~~(Math.random() * (10000 - 1 + 1)) + 1;
 	
 	function numSuffix(num) {
 		let x = num % 10;
 		let y = num % 100;
 		
-		if (x == 1 && y != 11) {
+		if (x == 1 && y != 11)
 			return num + 'st';
-		}
-		else if (x == 2 && y != 12) {
+		else if (x == 2 && y != 12)
 			return num + 'nd';
-		}
-		else if (x == 3 && y != 13) {
+		else if (x == 3 && y != 13)
 			return num + 'rd';
-		}
-		else {
+		else
 			return num + 'th';
-		}
 	}
 		
 	switch(true) {

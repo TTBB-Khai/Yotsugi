@@ -1,3 +1,5 @@
+//'use strict';
+
 const gm = require('gm');
 const path = require('path');
 
@@ -37,13 +39,13 @@ var obamaCommand = TTBT.registerCommand("joseph", (msg, args) => {
 			if (err) {
 				if (msg.author.id === process.env['CLIENT_OWNERID'])
 					TTBT.createMessage(msg.channel.id, "You have not set up the use of GraphicsMagick on your system!\n See the README for more info.");
+				else
+					TTBT.createMessage(msg.channel.id, "The owner of this bot does not have this command enabled yet!");
 				return;
 			}
 			 TTBT.createMessage(msg.channel.id, '', {file: buf, name: 'joseph.jpg'});
 		})
-		
-	delete nextLine;
-	delete randomLine;
+
 },	{
 		cooldown: 3000,
 		caseInsensitive: true,

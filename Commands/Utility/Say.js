@@ -1,3 +1,5 @@
+//'use strict';
+
 var sayCommand = TTBT.registerCommand("say", (msg, args) => {
 	return args.length === 0 ? "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "say [STRING HERE]**" : args.join(" ");
 },	{

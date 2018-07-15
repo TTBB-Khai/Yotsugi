@@ -1,3 +1,5 @@
+//'use strict';
+
 var helpCommand = TTBT.registerCommand("help", (msg) => {
 	TTBT.getDMChannel(msg.author.id).then(channel => {
 		  TTBT.createMessage(channel.id, "```Markdown\n"

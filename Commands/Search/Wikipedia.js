@@ -1,6 +1,10 @@
+//'use strict';
+
 const fetch = require('node-fetch');
 const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
+
+global.Promise = require('bluebird');
 
 var wikiCommand = TTBT.registerCommand("wikipedia", (msg, args) => {
 	if(args.length === 0)
@@ -28,20 +32,16 @@ var wikiCommand = TTBT.registerCommand("wikipedia", (msg, args) => {
 );
 
 function loadWikiList(search, msg) {
-	async function getURL() {
-		try {
-			let response = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + search +'&srwhat=text&srprop=timestamp&format=json');
-			return await response.json();
-		}
-		catch (err) {
-			TTBT.createMessage(msg.channel.id, "Failed to load wikipedia.com");
-			throw err;
-		}
-	}
-	
+
 	TTBT.sendChannelTyping(msg.channel.id);
 	
-	Promise.resolve(getURL())
+	fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + search +'&srwhat=text&srprop=timestamp&format=json')
+	.then((response, err) => {
+		if (response.ok)
+			return response.json();
+		else 
+			throw new TypeError("No JSON to parse!");
+	})
 	.then(data => {
 		printWikiList(data, msg);
 		return data;

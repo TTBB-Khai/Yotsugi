@@ -1,3 +1,5 @@
+//'use strict';
+
 var rpsCommand = TTBT.registerCommand("rps", (msg, args) => {
 	let RPS = [{id:0, name:"Paper", code:'p', emote:":hand_splayed:"}, {id:1, name:"Rock", code:'r', emote:":fist:"}, {id:2, name:"Scissors", code:'s', emote:":v:"}];
 	let randomRPS = RPS[Math.random() * RPS.length | 0];
@@ -21,12 +23,8 @@ var rpsCommand = TTBT.registerCommand("rps", (msg, args) => {
 				+ randomRPS.emote + " | **I** choose **" + randomRPS.name + "**\n"
 				+ output;
 	}
-	else {
-		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "rps [r/p/s]**";
-	}
 	
-	delete RPS;
-	delete randomRPS;
+	return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "rps [r/p/s]**";
 	
 },	{
 		cooldown: 3000,

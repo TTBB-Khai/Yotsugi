@@ -1,3 +1,5 @@
+//'use strict';
+
 const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 
@@ -20,8 +22,8 @@ var karaokeCommand = TTBT.registerCommand("karaoke", (msg) => {
 		session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].session = true;
 		getSingers(msg, singers);
 	}
-	else 
-		return ":x: | There is already a karaoke session in this server!";	
+	
+	return ":x: | There is already a karaoke session in this server!";	
 },	{
 		cooldown: 5000,
 		caseInsensitive: true,

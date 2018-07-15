@@ -1,8 +1,9 @@
+//'use strict';
+
 var eightballCommand = TTBT.registerCommand("8ball", (msg, args) => {
-	if(args.length === 0) {
+	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "8ball [QUESTION HERE]**";
-	}
-	
+
 	let roll = ~~(Math.random() * (10 - 1 + 1)) + 1; // Generates random number from 1-10
 	switch(roll) {
 		case 1:
