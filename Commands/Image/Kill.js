@@ -62,8 +62,8 @@ var killCommand = TTBT.registerCommand("kill", (msg, args) => {
 	
 	TTBT.sendChannelTyping(msg.channel.id);
 		
-	gm(path.join(process.cwd(), 'TTBT', 'res', 'images', 'kill.png'))
-		.font(path.join(process.cwd(), 'TTBT', 'res', 'fonts', 'animeace.ttf'), fontSize)
+	gm(path.join(process.cwd(), 'res', 'images', 'kill.png'))
+		.font(path.join(process.cwd(), 'res', 'fonts', 'animeace.ttf'), fontSize)
 		.gravity('Center')
 		.drawText(156, -90, randomText.txt)
 		.toBuffer(function (err, buf) {

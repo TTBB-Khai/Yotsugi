@@ -41,8 +41,8 @@ var obamaCommand = TTBT.registerCommand("obama", (msg, args) => {
 
 	TTBT.sendChannelTyping(msg.channel.id);
 		
-	gm(path.join(process.cwd(), 'TTBT', 'res', 'images', 'obama.png'))
-		.font(path.join(process.cwd(), 'TTBT', 'res', 'fonts', 'comicsans.ttf'), fontSize)
+	gm(path.join(process.cwd(), 'res', 'images', 'obama.png'))
+		.font(path.join(process.cwd(), 'res', 'fonts', 'comicsans.ttf'), fontSize)
 		.gravity('Center')
 		.draw(["rotate -6 text 20,120  " + text])
 		.toBuffer(function (err, buf) {

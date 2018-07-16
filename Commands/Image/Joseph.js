@@ -28,11 +28,11 @@ var obamaCommand = TTBT.registerCommand("joseph", (msg, args) => {
 	
 	TTBT.sendChannelTyping(msg.channel.id);
 		
-	gm(path.join(process.cwd(), 'TTBT', 'res', 'images', 'joseph.jpg'))
+	gm(path.join(process.cwd(), 'res', 'images', 'joseph.jpg'))
 		.stroke('#000000')
 		.strokeWidth(2)
 		.fill('#FFFFFF')
-		.font(path.join(process.cwd(), 'TTBT', 'res', 'fonts', 'Avenir-Black.ttf'), fontSize)
+		.font(path.join(process.cwd(), 'res', 'fonts', 'Avenir-Black.ttf'), fontSize)
 		.gravity('Center')
 		.drawText(10, 330, text)
 		.toBuffer(function (err, buf) {
