@@ -10,7 +10,6 @@ var whoCommand = TTBT.registerCommand("who", (msg, args) => {
 	let randomUser = msg.channel.guild.members.filter(member => member.user)[Math.random() * msg.channel.guild.members.filter(member => member.user).length | 0];
 	return "**" + msg.author.username + "** asked:" + "*\"Who " + args.join(" ") + "?\"* \n"
 		+ ":point_right: | **" + randomUser.username + "**";
-	}
 },	{
 		cooldown: 3000,
 		caseInsensitive: true,

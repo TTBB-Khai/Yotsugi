@@ -3,7 +3,7 @@
 class Utils {
 	
 	constructor (client) {
-		Utils._client = client
+		this.client = client
 	}
 
 	static delay (time) {

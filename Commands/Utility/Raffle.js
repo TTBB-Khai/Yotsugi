@@ -30,8 +30,8 @@ var raffleCommand = TTBT.registerCommand("raffle", (msg) => {
 		let rafflers = [];
 		getRaffles(msg, rafflers);
 	}
-	
-	return ":x: | There is already a raffle in this server!";	
+	else
+		return ":x: | There is already a raffle in this server!";	
 	
 },	{
 		cooldown: 5000,
