@@ -4,41 +4,22 @@ var eightballCommand = TTBT.registerCommand("8ball", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "8ball [QUESTION HERE]**";
 
-	let roll = ~~(Math.random() * (10 - 1 + 1)) + 1; // Generates random number from 1-10
-	switch(roll) {
-		case 1:
-			return ":8ball: " + msg.author.mention + " **| Yes**";
-			break;
-		case 2:
-			return ":8ball: " + msg.author.mention + " **| No**";
-			break;
-		case 3:
-			return ":8ball: " + msg.author.mention + " **| Absolutely**";
-			break;
-		case 4:
-			return ":8ball: " + msg.author.mention + " **| Absolutely not**";
-			break;
-		case 5:
-			return ":8ball: " + msg.author.mention + " **| Probably**";
-			break;
-		case 6:
-			return ":8ball: " + msg.author.mention + " **| Most likely**";
-			break;
-		case 7:
-			return ":8ball: " + msg.author.mention + " **| Eh...sure why not**";
-			break;
-		case 8:
-			return ":8ball: " + msg.author.mention + " **| Don't count on it**";
-			break;
-		case 9:
-			return ":8ball: " + msg.author.mention + " **| Maybe**";
-			break;
-		case 10:
-			return ":8ball: " + msg.author.mention + " **| IDK OKAY!? I QUIT THIS STUPID JOB!**";
-			break;
-		default:
-			return "¯\_(ツ)_/¯";
+	let random = ~~(Math.random() * (10 - 1 + 1)) + 1; // Generates random number from 1-10
+	const lookupBall = {
+		1: "Yes",
+		2: "No",
+		3: "Absolutely",
+		4: "Absolutely not",
+		5: "Probably",
+		6: "Most Likely",
+		7: "Eh...sure why not",
+		8: "Don't count on it",
+		9: "Maybe",
+		10: "IDK OKAY!? I QUIT THIS STUPID JOB!"
 	}
+	
+	return ":8ball: " + msg.author.mention + " **| " + lookupBall[random] + "**";
+	
 },	{
 		cooldown: 3000,
 		caseInsensitive: true,

@@ -1,21 +1,32 @@
 //'use strict';
 
+const path = require('path');
+const { numSuffix: suffix } = require(path.join(process.cwd(), 'Utils', 'NumSuffix.js'));
+
 var fishCommand = TTBT.registerCommand("fish", (msg, args) => {
 	let fish = ~~(Math.random() * (10000 - 1 + 1)) + 1;
 	
-	function numSuffix(num) {
-		let x = num % 10;
-		let y = num % 100;
-		
-		if (x == 1 && y != 11)
-			return num + 'st';
-		else if (x == 2 && y != 12)
-			return num + 'nd';
-		else if (x == 3 && y != 13)
-			return num + 'rd';
-		else
-			return num + 'th';
-	}
+	// const lookupFish = {
+		// range(0, 200): "a** :fish:**!**",
+		// 200: "an*** :airplane:***!***\nNo one's inside. Must've just been a test flight.",
+		// range(201, 301): "a** :tropical_fish:**!**",
+		// range(301, 311): "a** :shrimp:**!**",
+		// range(311, 321): "a** :shark:**!**",
+		// range(321, 331): "a** :squid:**!**",
+		// range(331, 341): "a** :blowfish:**!**",
+		// range(341, 351): "an** :octopus:**!**",
+		// range(251, 361): "a** :dolphin:**!**",
+		// range(361, 371): "a** :whale:**!**",
+		// range(371, 381): "a** :whale2:**!**",
+		// range(381, 386): "a :boot:**!**",
+		// range(386, 389): "a :bikini:**!**",
+		// range(389, 6001): "a** :trophy:**!** \nIt reads: \"**" + suffix(fish) + " Place** in the **Everybody Wins Contest!**\"",
+		// 9999: "a*** :statue_of_liberty:**!**\nNow that's one heck of a fishing line you got there!",
+		// 10000: "a*** :love_hotel:**!**\nWait...how did you...? What????"
+	// }
+	
+	// return ":fishing_pole_and_fish: **| " + msg.author.username + " caught " + lookupFish[random] 
+		// || ":fishing_pole_and_fish: **| " + msg.author.username + " caught** nothing :crying_cat_face:";
 		
 	switch(true) {
 		case (fish >= 0 && fish <= 199):
@@ -60,7 +71,7 @@ var fishCommand = TTBT.registerCommand("fish", (msg, args) => {
 			break;
 		case (fish >= 389 && fish <= 6000):	
 			return ":fishing_pole_and_fish: **| " + msg.author.username + " caught a** :trophy:**!** \n"
-				+ "It reads: \"**" + numSuffix(fish) + " Place** in the **Everybody Wins Contest!**\"";
+				+ "It reads: \"**" + suffix(fish) + " Place** in the **Everybody Wins Contest!**\"";
 			break;
 		case (fish == 9999):
 			return ":fishing_pole_and_fish: ***| " + msg.author.username + " caught a*** :statue_of_liberty:**!**\n"

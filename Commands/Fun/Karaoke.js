@@ -38,77 +38,76 @@ function getSingers(msg, singers) {
 	
 	function waitForYourMessage (newMsg) {
 		if (newMsg.channel.id === msg.channel.id) {
-			if (newMsg.content.toLowerCase() === '🎤') {
-				if (singers.indexOf(newMsg.author.username) === -1) {
-					singers.push(newMsg.author.username);
-					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-				
-					TTBT.createMessage(msg.channel.id, "**" + newMsg.author.username + "** has joined the queue!");
+			const lookupCommand = {
+				'🎤' : () => {
+					if (singers.indexOf(newMsg.author.username) === -1) {
+						singers.push(newMsg.author.username);
+						TTBT.removeListener('messageCreate', waitForYourMessage, true); 
+						TTBT.createMessage(msg.channel.id, "**" + newMsg.author.username + "** has joined the queue!");
+						getSingers(msg, singers);
+					}
+					else {
+						TTBT.removeListener('messageCreate', waitForYourMessage, true); 
+						TTBT.createMessage(msg.channel.id, ":x: | **" + newMsg.author.username + "**, you are already in the queue!");
+						getSingers(msg, singers);
+					}
+				},
+				'queue': () => {
+					TTBT.removeListener('messageCreate', waitForYourMessage, true);
+					peekQueue(msg, singers);
 					getSingers(msg, singers);
-				}
-				else {
-					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-					TTBT.createMessage(msg.channel.id, ":x: | **" + newMsg.author.username + "**, you are already in the queue!");
-					getSingers(msg, singers);
-				}
-			}
-			else if (newMsg.content.toLowerCase() === 'queue') {
-				TTBT.removeListener('messageCreate', waitForYourMessage, true);
-				
-				peekQueue(msg, singers);
-				getSingers(msg, singers);				
-			}
-			else if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id && newMsg.content.toLowerCase() === 'start') {
-				TTBT.removeListener('messageCreate', waitForYourMessage, true);
-
-				startQueue(msg, singers);
-			}
-			else if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id && newMsg.content.toLowerCase() === 'skip') {
-				TTBT.removeListener('messageCreate', waitForYourMessage, true);
-
-				skipQueue(msg, singers);			
-			}
-			else if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id && newMsg.content.toLowerCase() === 'end') {
-				TTBT.removeListener('messageCreate', waitForYourMessage, true);
-				
-				if (singers.length > 0) {
-					TTBT.createMessage(msg.channel.id, "**WARNING:** There are still users in the queue! Are you sure you want to end this session?\n"
-						+ "**Type 'yes' to end the session or type 'no' to continue it.**");
-						
-						function areYouSure(newerMsg) {
-							if (newerMsg.channel.id === msg.channel.id && newerMsg.author.id === msg.author.id) {
-								if (newerMsg.content.toLowerCase() === 'yes') {
-									TTBT.removeListener('messageCreate', areYouSure, true);
-									delete singers;
-									endKaraoke(msg);
-								}
-								else if (newerMsg.content.toLowerCase() === 'no') {
-									TTBT.removeListener('messageCreate', areYouSure, true);
-									TTBT.createMessage(msg.channel.id, "**Karaoke will now continue!**");
-									
-									getSingers(msg, singers);
+				},
+				'start': () => {
+					if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
+						TTBT.removeListener('messageCreate', waitForYourMessage, true);
+						startQueue(msg, singers);
+					}
+				},
+				'skip': () => {
+					if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
+						TTBT.removeListener('messageCreate', waitForYourMessage, true);
+						skipQueue(msg, singers);
+					}			
+				},
+				'end': () => {
+					TTBT.removeListener('messageCreate', waitForYourMessage, true);
+					if (singers.length > 0) {
+						TTBT.createMessage(msg.channel.id, "**WARNING:** There are still users in the queue! Are you sure you want to end this session?\n"
+							+ "**Type 'yes' to end the session or type 'no' to continue it.**");
+							
+							function areYouSure(newerMsg) {
+								if (newerMsg.channel.id === msg.channel.id && newerMsg.author.id === msg.author.id) {
+									if (newerMsg.content.toLowerCase() === 'yes') {
+										TTBT.removeListener('messageCreate', areYouSure, true);
+										delete singers;
+										endKaraoke(msg);
+									}
+									else if (newerMsg.content.toLowerCase() === 'no') {
+										TTBT.removeListener('messageCreate', areYouSure, true);
+										TTBT.createMessage(msg.channel.id, "**Karaoke will now continue!**");
+										
+										getSingers(msg, singers);
+									}
 								}
 							}
-						}
-						
-						TTBT.on('messageCreate', areYouSure);
-	
-						setTimeout(() => {
-							TTBT.removeListener('messageCreate', areYouSure);
-							getSingers(msg, singers);
-						}, 30 * 1000)
-				}
-				else
-					endKaraoke(msg);
+							
+							TTBT.on('messageCreate', areYouSure);
+		
+							setTimeout(() => {
+								TTBT.removeListener('messageCreate', areYouSure);
+								getSingers(msg, singers);
+							}, 30 * 1000)
+					}
+					else
+						endKaraoke(msg);
+				}	
 			}
+			
+			return (typeof lookupCommand[newMsg.content.toLowerCase()] !== 'function') ? 0 : lookupCommand[newMsg.content.toLowerCase()]();
 		}
 	}	
 	
 	TTBT.on('messageCreate', waitForYourMessage);
-	
-	// setTimeout(() => {
-		// TTBT.removeListener('messageCreate', waitForYourMessage);
-	// }, 30 * 1000)
 }
 
 function peekQueue(msg, singers) {

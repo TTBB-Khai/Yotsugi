@@ -1,15 +1,14 @@
 //'use strict';
 
+const path = require('path');
+const { modulus: mod } = require(path.join(process.cwd(), 'Utils', 'Modulus.js'));
+
 var rpsCommand = TTBT.registerCommand("rps", (msg, args) => {
 	let RPS = [{id:0, name:"Paper", code:'p', emote:":hand_splayed:"}, {id:1, name:"Rock", code:'r', emote:":fist:"}, {id:2, name:"Scissors", code:'s', emote:":v:"}];
 	let randomRPS = RPS[Math.random() * RPS.length | 0];
 	let choice = RPS.filter(function (rps) {
 		return (rps.code === args.join(" ").charAt(0).toLowerCase());
 	});
-	
-	function mod(n, m) {
-		return ((n % m) + m) % m;
-	}
 
 	if (choice.length > 0) {
 		let result = mod((choice[0].id - randomRPS.id), 3);

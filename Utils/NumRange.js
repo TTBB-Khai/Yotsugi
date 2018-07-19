@@ -5,10 +5,11 @@ class Utils {
 	constructor (client) {
 		this.client = client
 	}
-
-	static delay (time) {
-		return new Promise((resolve) => setTimeout(() => resolve(), time))
+	
+	static numRange (start, end) {
+		return new Array(end - start).fill().map((d, i) => i + start);
 	}
+	
 }
 
 module.exports = Utils;
