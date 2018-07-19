@@ -1,6 +1,6 @@
 //'use strict';
 
-var whoCommand = TTBT.registerCommand("who", (msg, args) => {
+TTBT.registerCommand("who", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "who [QUESTION HERE]**";
 	

@@ -1,6 +1,6 @@
 //'use strict';
 
-var banCommand = TTBT.registerCommand("kick", (msg, args) => {
+TTBT.registerCommand("kick", (msg, args) => {
 	if (args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "kick [USER]**";
 	

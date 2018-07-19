@@ -12,7 +12,7 @@ const userpass = process.env['SPOTIFY_CLIENT_ID'] + ':' + process.env['SPOTIFY_C
 const basicAuth = 'Basic ' + Buffer.from(userpass).toString('base64');
 let session = false;
 
-var getAccessCommand = TTBT.registerCommand("token", (msg) => {
+TTBT.registerCommand("token", (msg) => {
 	
 	app.use(express.static('public'));
 	app.set('view engine', 'ejs');

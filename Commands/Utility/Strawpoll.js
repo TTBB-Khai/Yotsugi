@@ -3,7 +3,7 @@
 const request = require('request');
 const cheerio = require('cheerio');
 
-var strawpollCommand = TTBT.registerCommand("strawpoll", (msg) => {
+TTBT.registerCommand("strawpoll", (msg) => {
 	strawpollTitle(msg);
 },	{
 		cooldown: 5000,

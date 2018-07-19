@@ -3,7 +3,7 @@
 const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 
-var karaokeCommand = TTBT.registerCommand("karaoke", (msg) => {
+TTBT.registerCommand("karaoke", (msg) => {
 	
 	if (!msg.channel.guild)
 		return "This command only works in a server.";
@@ -103,7 +103,7 @@ function getSingers(msg, singers) {
 				}	
 			}
 			
-			return (typeof lookupCommand[newMsg.content.toLowerCase()] !== 'function') ? 0 : lookupCommand[newMsg.content.toLowerCase()]();
+			return (typeof lookupCommand[newMsg.content.toLowerCase()] === 'function') ? lookupCommand[newMsg.content.toLowerCase()]() : 0;
 		}
 	}	
 	

@@ -3,7 +3,7 @@
 const gm = require('gm');
 const path = require('path');
 
-var obamaCommand = TTBT.registerCommand("obama", (msg, args) => {
+TTBT.registerCommand("obama", (msg, args) => {
 	
 	if (args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "obama [STRING HERE]**";

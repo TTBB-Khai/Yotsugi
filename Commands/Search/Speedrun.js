@@ -5,7 +5,7 @@ const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'))
 const fetch = require('node-fetch');
 global.Promise = require('bluebird');
 
-var speedrunCommand = TTBT.registerCommand("speedrun", (msg, args) => {
+TTBT.registerCommand("speedrun", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "speedrun [GAME HERE]**";
 	

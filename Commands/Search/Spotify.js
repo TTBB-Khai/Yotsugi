@@ -9,7 +9,7 @@ global.Promise = require('bluebird');
 const userpass = process.env['SPOTIFY_CLIENT_ID'] + ':' + process.env['SPOTIFY_CLIENT_SECRET'];
 const basicAuth = 'Basic ' + Buffer.from(userpass).toString('base64');
 
-var spotifyCommand = TTBT.registerCommand("spotify", (msg, args) => {
+TTBT.registerCommand("spotify", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "spotify [ARTIST HERE]**";
 	

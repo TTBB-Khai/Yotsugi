@@ -1,6 +1,6 @@
 //'use strict';
 
-var flipCommand = TTBT.registerCommand("flip", (msg) => {
+TTBT.registerCommand("flip", (msg) => {
 	let flip = ~~(Math.random() * (2 - 1 + 1)) + 1;
 	let coin = flip === 2 ? "**Heads!**" : "**Tails!**";
 	return msg.author.username + "'s flip: " + coin;

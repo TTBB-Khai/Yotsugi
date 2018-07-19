@@ -3,7 +3,7 @@
 const path = require('path');
 const { numSuffix: suffix } = require(path.join(process.cwd(), 'Utils', 'NumSuffix.js'));
 
-var fishCommand = TTBT.registerCommand("fish", (msg, args) => {
+TTBT.registerCommand("fish", (msg, args) => {
 	let fish = ~~(Math.random() * (10000 - 1 + 1)) + 1;
 	
 	// const lookupFish = {

@@ -3,7 +3,7 @@
 const path = require('path');
 const { delay: wait } = require(path.join(process.cwd(), 'Utils', 'Delay.js'));
 
-var banRouletteCommand = TTBT.registerCommand("banRoulette", (msg, args) => {
+TTBT.registerCommand("banRoulette", (msg, args) => {
 	
 	if (!msg.channel.guild)
 		return "This command only works in a server";

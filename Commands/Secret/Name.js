@@ -1,6 +1,6 @@
 //'use strict';
 
-var nameCommand = TTBT.registerCommand("name", (msg, args) => {	
+TTBT.registerCommand("name", (msg, args) => {	
 
 	if (msg.author.id !== process.env['CLIENT_OWNERID'])
 		return "This is an owner only command!";

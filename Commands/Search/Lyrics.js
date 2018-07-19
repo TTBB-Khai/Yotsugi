@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 global.Promise = require('bluebird');
 
-var lyricsCommand = TTBT.registerCommand("lyrics", (msg, args) => {
+TTBT.registerCommand("lyrics", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "lyrics [SONG HERE]**";
 	

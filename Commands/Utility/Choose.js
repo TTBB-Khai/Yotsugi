@@ -1,6 +1,6 @@
 //'use strict';
 
-var chooseCommand = TTBT.registerCommand("choose", (msg, args) => {
+TTBT.registerCommand("choose", (msg, args) => {
 	if (args.length === 0 || args.join("").indexOf("|") < 0)
 		return "Incorrect usage. Type **" + process.env['CLIENT_PREFIX'] + "help choose** for more info";
 	

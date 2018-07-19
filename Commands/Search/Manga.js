@@ -9,7 +9,7 @@ global.Promise = require('bluebird');
 const userpass = process.env['MAL_USERNAME'] + ':' + process.env['MAL_PASSWORD'];
 const basicAuth = 'Basic ' + Buffer.from(userpass).toString('base64');
 
-var mangaCommand = TTBT.registerCommand("manga", (msg, args) => {
+TTBT.registerCommand("manga", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: " + process.env['CLIENT_PREFIX'] + "**manga [manga TITLE HERE]**";
 	

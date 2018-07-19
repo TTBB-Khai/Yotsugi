@@ -3,7 +3,7 @@
 const fetch = require('node-fetch');
 global.Promise = require('bluebird');
 
-var ctbCommand = TTBT.registerCommand("ctb", (msg, args) => {
+TTBT.registerCommand("ctb", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "ctb [OSU USERNAME HERE]**";
 	

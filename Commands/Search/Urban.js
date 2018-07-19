@@ -3,7 +3,7 @@
 const fetch = require('node-fetch');
 global.Promise = require('bluebird');
 
-var urbanCommand = TTBT.registerCommand("urban", (msg, args) => {
+TTBT.registerCommand("urban", (msg, args) => {
 	if(args.length === 0) {
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "urban [WORD HERE]**";
 	}

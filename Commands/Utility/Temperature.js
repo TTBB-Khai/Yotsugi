@@ -1,6 +1,6 @@
 //'use strict';
 
-var temperatureCommand = TTBT.registerCommand("temperature", (msg, args) => {
+TTBT.registerCommand("temperature", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "temperature [NUMBER HERE] [C/F]**";
 	

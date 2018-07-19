@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 
 global.Promise = require('bluebird');
 
-var challongeCommand = TTBT.registerCommand("challonge", (msg, args) => {
+TTBT.registerCommand("challonge", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "challonge [SUBDOMAIN HERE]**";
 	

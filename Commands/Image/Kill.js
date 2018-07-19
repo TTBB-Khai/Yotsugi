@@ -3,7 +3,7 @@
 const gm = require('gm');
 const path = require('path');
 
-var killCommand = TTBT.registerCommand("kill", (msg, args) => {
+TTBT.registerCommand("kill", (msg, args) => {
 
 	let input = args.join(' ') ? args.join(' ').replace(/<@!*(\d{17,18})>/gi, (matched, id) => {
 		let member = msg.channel.guild.members.get(id);

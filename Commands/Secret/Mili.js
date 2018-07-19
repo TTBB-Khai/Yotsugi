@@ -1,6 +1,6 @@
 //'use strict';
 
-var miliCommand = TTBT.registerCommand("mili", (msg) => {
+TTBT.registerCommand("mili", (msg) => {
 	let random = ~~(Math.random() * (30 - 1 + 1)) + 1;
 	const lookupSong = {
 		1: "https://youtu.be/oOlWu15vzyE",	// Past the Stargazing Season

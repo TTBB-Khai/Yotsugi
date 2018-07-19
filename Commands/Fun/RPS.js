@@ -3,7 +3,7 @@
 const path = require('path');
 const { modulus: mod } = require(path.join(process.cwd(), 'Utils', 'Modulus.js'));
 
-var rpsCommand = TTBT.registerCommand("rps", (msg, args) => {
+TTBT.registerCommand("rps", (msg, args) => {
 	let RPS = [{id:0, name:"Paper", code:'p', emote:":hand_splayed:"}, {id:1, name:"Rock", code:'r', emote:":fist:"}, {id:2, name:"Scissors", code:'s', emote:":v:"}];
 	let randomRPS = RPS[Math.random() * RPS.length | 0];
 	let choice = RPS.filter(function (rps) {

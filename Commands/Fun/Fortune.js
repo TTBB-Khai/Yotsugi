@@ -3,7 +3,7 @@
 const fetch = require('node-fetch');
 global.Promise = require('bluebird');
 
-var fortuneCommand = TTBT.registerCommand("fortune", (msg) => {
+TTBT.registerCommand("fortune", (msg) => {
 	
 	fetch('http://www.yerkee.com/api/fortune')
 	.then((response, err) => {

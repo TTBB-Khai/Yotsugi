@@ -1,6 +1,6 @@
 //'use strict';
 
-var distanceCommand = TTBT.registerCommand("distance", (msg, args) => {
+TTBT.registerCommand("distance", (msg, args) => {
 	if (args.length === 0) 
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "distance [NUMBER HERE] [K/M]**";
 	

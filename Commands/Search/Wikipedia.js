@@ -6,7 +6,7 @@ const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'))
 
 global.Promise = require('bluebird');
 
-var wikiCommand = TTBT.registerCommand("wikipedia", (msg, args) => {
+TTBT.registerCommand("wikipedia", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "wikipedia [SEARCH QUERY HERE]**";
 	

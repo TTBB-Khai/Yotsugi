@@ -5,7 +5,7 @@ const path = require('path');
 const fetch = require('node-fetch');
 global.Promise = require('bluebird');
 
-var lmgtfyCommand = TTBT.registerCommand("lmgtfy", (msg, args) => {
+TTBT.registerCommand("lmgtfy", (msg, args) => {
 	if (args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "lmgtfy [SEARCH HERE]**";
 	

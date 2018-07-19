@@ -1,6 +1,6 @@
 //'use strict';
 
-var slotCommand = TTBT.registerCommand("slot", (msg, args) => {
+TTBT.registerCommand("slot", (msg, args) => {
 	if (isNaN(args.join(" ")))
 		return  "``" + args.join(" ") + "`` is not a number";
 	

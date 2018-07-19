@@ -5,7 +5,7 @@ const { delay: wait } = require(path.join(process.cwd(), 'Utils', 'Delay.js'));
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 
 
-var raffleCommand = TTBT.registerCommand("raffle", (msg) => {
+TTBT.registerCommand("raffle", (msg) => {
 	
 	if (!msg.channel.guild)
 		return "This command only works in a server.";

@@ -1,6 +1,6 @@
 //'use strict';
 
-var eightballCommand = TTBT.registerCommand("8ball", (msg, args) => {
+TTBT.registerCommand("8ball", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "8ball [QUESTION HERE]**";
 

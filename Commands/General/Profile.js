@@ -1,6 +1,6 @@
 //'use strict';
 
-var profileCommand = TTBT.registerCommand("profile", (msg, args) => {
+TTBT.registerCommand("profile", (msg, args) => {
 	if (!msg.channel.guild)
 		return "This command only works in a server.";
 	

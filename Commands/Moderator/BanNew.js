@@ -12,7 +12,7 @@
 		// console.log(member.joinedAt);
 // });
 
-// var banNewCommand = TTBT.registerCommand("banNew", (msg) => {
+// TTBT.registerCommand("banNew", (msg) => {
 	// if (!msg.channel.guild)
 		// return "This command only works in a server.";
 	
