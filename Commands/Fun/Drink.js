@@ -1,19 +1,19 @@
 //'use strict';
 
 TTBT.registerCommand("drink", (msg, args) => {
-	let random = ~~(Math.random() * (10 - 1 + 1)) + 1; // Generates random number from 1-10
+	let random = ~~(Math.random() * (9 - 0 + 1)) + 0;
 	let user = msg.mentions.length > 0 ? msg.mentions[0].mention : msg.author.mention;
 	const lookupDrink = {
-		1: ":beer:",
-		2: ":milk:",
-		3: ":sake:",
-		4: ":whisky:",
-		5: ":cocktail:",
-		6: ":tropical_drink:",
-		7: ":champagne:",
-		8: ":tea:",
-		9: ":coffee:",
-		10: ":beers:"
+		0: ":beer:",
+		1: ":milk:",
+		2: ":sake:",
+		3: ":whisky:",
+		4: ":cocktail:",
+		5: ":tropical_drink:",
+		6: ":champagne:",
+		7: ":tea:",
+		8: ":coffee:",
+		9: ":beers:"
 	}
 	
 	return "**" + user + " Drink some** " + lookupDrink[random];

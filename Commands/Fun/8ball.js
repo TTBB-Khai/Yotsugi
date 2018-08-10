@@ -4,18 +4,18 @@ TTBT.registerCommand("8ball", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "8ball [QUESTION HERE]**";
 
-	let random = ~~(Math.random() * (10 - 1 + 1)) + 1; // Generates random number from 1-10
+	let random = ~~(Math.random() * (9 - 0 + 1)) + 0;
 	const lookupBall = {
-		1: "Yes",
-		2: "No",
-		3: "Absolutely",
-		4: "Absolutely not",
-		5: "Probably",
-		6: "Most Likely",
-		7: "Eh...sure why not",
-		8: "Don't count on it",
-		9: "Maybe",
-		10: "IDK OKAY!? I QUIT THIS STUPID JOB!"
+		0: "Yes",
+		1: "No",
+		2: "Absolutely",
+		3: "Absolutely not",
+		4: "Probably",
+		5: "Most Likely",
+		6: "Eh...sure why not",
+		7: "Don't count on it",
+		8: "Maybe",
+		9: "IDK OKAY!? I QUIT THIS STUPID JOB!"
 	}
 	
 	return ":8ball: " + msg.author.mention + " **| " + lookupBall[random] + "**";

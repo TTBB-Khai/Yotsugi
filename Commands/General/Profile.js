@@ -8,15 +8,23 @@ TTBT.registerCommand("profile", (msg, args) => {
 		return (mems.username.toLowerCase() === args.join(" ").toLowerCase()) || (mems.id === args.join(" "))
 	});
 	
-	let user = args.length > 0 ?	// If there's an argument
-		msg.mentions.length > 0 ? 	// If there's a mention
-			msg.mentions[0] 		// user = first mention
-		: getUser.length > 0 ? 		// If there's not a mention
-			getUser[0].user 		// user = getUser
-		: "No user found." 			// Else, no user found
-		: msg.author;				// If there's no arguement, user = author
+	let user = "";
+	let foundUser = true;
+	
+	if (args.length > 0) {
+		if (msg.mentions.length > 0)
+			user = msg.mentions[0]
+		else if (getUser.length > 0)
+			user = getUser[0].user
+		else {
+			user = "No user found."
+			foundUser = false;
+		}
+	}
+	else
+		user = msg.author;
 
-	if (user !== "No user found.") {
+	if (foundUser) {
 		let onlineStatus = msg.channel.guild.members.get(user.id).status;
 		let creationDate = new Date(user.createdAt);
 		let joinDate = new Date(msg.channel.guild.members.get(user.id).joinedAt);

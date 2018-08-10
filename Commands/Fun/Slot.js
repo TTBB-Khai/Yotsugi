@@ -16,7 +16,7 @@ TTBT.registerCommand("slot", (msg, args) => {
 	if (bitAmount < 0)
 		return "You must bet a number higher than 0";
 	
-	for (let i = 0; i <= 2; i++) {
+	for (let i = 0; !(i > 2); i++) {
 		let randomNumber = ~~(Math.random() * (imageValue.length - 1 + 1)) + 0;
 		selectedImages[i] = imageValue[randomNumber];
 		output += selectedImages[i];

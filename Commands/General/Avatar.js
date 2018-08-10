@@ -8,15 +8,21 @@ TTBT.registerCommand("avatar", (msg, args) => {
 		return (mems.username.toLowerCase() === args.join(" ").toLowerCase()) || (mems.id === args.join(" "));
 	});
 	
-	let avatar = args.length > 0 ?		// If there's an argument
-		msg.mentions.length > 0 ? 		// If there's a mention
-			msg.mentions[0].avatarURL 	// avatar = first mention
-		: getAvatar.length > 0 ? 		// If there's not a mention
-			getAvatar[0].avatarURL 		// avatar = getUser
-		: "No user found." 				// Else, no user found
-		: msg.author.avatarURL;			// If there's no arguement, avatar = author
+	let avatar = "";
+	
+	if (args.length > 0) {
+		if (msg.mentions.length > 0)
+			avatar = msg.mentions[0].avatarURL;
+		else if (getAvatar.length > 0)
+			avatar = getAvatar[0].avatarURL;
+		else
+			avatar = "No user found.";
+	}
+	else
+		avatar = msg.author.avatarURL;
 		
 	return avatar;
+	
 },	{
 		caseInsensitive: true,
 		cooldown: 3000,

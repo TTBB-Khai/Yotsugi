@@ -1,6 +1,9 @@
 //'use strict';
 
-TTBT.registerCommand("roll", (msg) => {
+TTBT.registerCommand("roll", (msg, args) => {
+	if(args.length === 0)
+		return ":game_die: |  " + msg.author.username + "'s roll: " + "**" + roll + "**";
+	
 	let roll = ~~(Math.random() * (6 - 1 + 1)) + 1; // Generates random number from 1-6
     return ":game_die: |  " + msg.author.username + "'s roll: " + "**" + roll + "**";
 },	{

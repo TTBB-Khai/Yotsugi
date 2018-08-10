@@ -42,15 +42,13 @@ function getSingers(msg, singers) {
 				'🎤' : () => {
 					if (singers.indexOf(newMsg.author.username) === -1) {
 						singers.push(newMsg.author.username);
-						TTBT.removeListener('messageCreate', waitForYourMessage, true); 
 						TTBT.createMessage(msg.channel.id, "**" + newMsg.author.username + "** has joined the queue!");
-						getSingers(msg, singers);
 					}
 					else {
-						TTBT.removeListener('messageCreate', waitForYourMessage, true); 
-						TTBT.createMessage(msg.channel.id, ":x: | **" + newMsg.author.username + "**, you are already in the queue!");
-						getSingers(msg, singers);
+						TTBT.createMessage(msg.channel.id, ":x: | **" + newMsg.author.username + "**, you are already in the queue!");	
 					}
+					TTBT.removeListener('messageCreate', waitForYourMessage, true);
+					getSingers(msg, singers);
 				},
 				'queue': () => {
 					TTBT.removeListener('messageCreate', waitForYourMessage, true);
@@ -58,13 +56,13 @@ function getSingers(msg, singers) {
 					getSingers(msg, singers);
 				},
 				'start': () => {
-					if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
+					if (newMsg.author.id === msg.author.id) {
 						TTBT.removeListener('messageCreate', waitForYourMessage, true);
 						startQueue(msg, singers);
 					}
 				},
 				'skip': () => {
-					if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
+					if (newMsg.author.id === msg.author.id) {
 						TTBT.removeListener('messageCreate', waitForYourMessage, true);
 						skipQueue(msg, singers);
 					}			
