@@ -24,7 +24,7 @@ TTBT.registerCommand("joseph", (msg, args) => {
 	let text = [
 		randomLine,
 		'"' + input + '"'
-		].join('\n');
+	].join('\n');
 	
 	TTBT.sendChannelTyping(msg.channel.id);
 		

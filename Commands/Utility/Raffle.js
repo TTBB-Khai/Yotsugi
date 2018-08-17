@@ -44,7 +44,7 @@ TTBT.registerCommand("raffle", (msg) => {
 );
 
 function getRaffles(msg, rafflers) {
-	function waitForYourMessage (newMsg) {
+	function waitMessage (newMsg) {
 		if (newMsg.channel.id === msg.channel.id) {
 			if (newMsg.content.toLowerCase() === 'raffle') {
 				if (rafflers.indexOf(newMsg.author.username + '#' + newMsg.author.discriminator) === -1) {
@@ -82,10 +82,10 @@ function getRaffles(msg, rafflers) {
 		}
 	}	
 	
-	TTBT.on('messageCreate', waitForYourMessage);
+	TTBT.on('messageCreate', waitMessage);
 	
 	setTimeout(() => {
-		TTBT.removeListener('messageCreate', waitForYourMessage);
+		TTBT.removeListener('messageCreate', waitMessage);
 		getWinner(msg, rafflers);
 	}, 60 * 1000)
 	

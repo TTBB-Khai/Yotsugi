@@ -36,7 +36,7 @@ TTBT.registerCommand("karaoke", (msg) => {
 
 function getSingers(msg, singers) {
 	
-	function waitForYourMessage (newMsg) {
+	function waitMessage (newMsg) {
 		if (newMsg.channel.id === msg.channel.id) {
 			const lookupCommand = {
 				'🎤' : () => {
@@ -47,28 +47,28 @@ function getSingers(msg, singers) {
 					else {
 						TTBT.createMessage(msg.channel.id, ":x: | **" + newMsg.author.username + "**, you are already in the queue!");	
 					}
-					TTBT.removeListener('messageCreate', waitForYourMessage, true);
+					TTBT.removeListener('messageCreate', waitMessage, true);
 					getSingers(msg, singers);
 				},
 				'queue': () => {
-					TTBT.removeListener('messageCreate', waitForYourMessage, true);
+					TTBT.removeListener('messageCreate', waitMessage, true);
 					peekQueue(msg, singers);
 					getSingers(msg, singers);
 				},
 				'start': () => {
 					if (newMsg.author.id === msg.author.id) {
-						TTBT.removeListener('messageCreate', waitForYourMessage, true);
+						TTBT.removeListener('messageCreate', waitMessage, true);
 						startQueue(msg, singers);
 					}
 				},
 				'skip': () => {
 					if (newMsg.author.id === msg.author.id) {
-						TTBT.removeListener('messageCreate', waitForYourMessage, true);
+						TTBT.removeListener('messageCreate', waitMessage, true);
 						skipQueue(msg, singers);
 					}			
 				},
 				'end': () => {
-					TTBT.removeListener('messageCreate', waitForYourMessage, true);
+					TTBT.removeListener('messageCreate', waitMessage, true);
 					if (singers.length > 0) {
 						TTBT.createMessage(msg.channel.id, "**WARNING:** There are still users in the queue! Are you sure you want to end this session?\n"
 							+ "**Type 'yes' to end the session or type 'no' to continue it.**");
@@ -105,7 +105,7 @@ function getSingers(msg, singers) {
 		}
 	}	
 	
-	TTBT.on('messageCreate', waitForYourMessage);
+	TTBT.on('messageCreate', waitMessage);
 }
 
 function peekQueue(msg, singers) {

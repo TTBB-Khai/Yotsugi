@@ -88,24 +88,24 @@ function printArtistList(spotifyData, msg) {
 }
 
 function getArtistId(spotifyData, msg) {
-	function waitForYourMessage (newMsg) {
+	function waitMessage (newMsg) {
 		if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
 			if (!isNaN(newMsg.content) && newMsg.content != 0) {
-				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
+				TTBT.removeListener('messageCreate', waitMessage, true); 
 				loadArtistInfo(spotifyData.artists.items[Number(newMsg.content) - 1], msg);
 			}
 			else if (newMsg.content === 'exit') { 
 				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
-				TTBT.removeListener('messageCreate', waitForYourMessage, true); 
+				TTBT.removeListener('messageCreate', waitMessage, true); 
 				session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false
 			}
 		}
 	}	
 	
-	TTBT.on('messageCreate', waitForYourMessage);
+	TTBT.on('messageCreate', waitMessage);
 	
 	setTimeout(() => {
-		TTBT.removeListener('messageCreate', waitForYourMessage);
+		TTBT.removeListener('messageCreate', waitMessage);
 		session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false
 	}, 30 * 1000)
 }

@@ -87,11 +87,11 @@ function printmangaList(mangaData, msg) {
 }
 
 function getmanga(mangaData, msg) {
-	function waitForYourMessage (newMsg) {
+	function waitMessage (newMsg) {
 		parseString(mangaData, (err, results) => {
 			if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
 				if (!isNaN(newMsg.content) && newMsg.content != 0) {
-					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
+					TTBT.removeListener('messageCreate', waitMessage, true); 
 						
 					let synopsis = results.manga.entry[Number(newMsg.content) - 1].synopsis;
 					synopsis = ("" + synopsis).replace(/&#039;|&rsquo;/ig, "'");
@@ -116,17 +116,17 @@ function getmanga(mangaData, msg) {
 				}
 				else if (newMsg.content === 'exit') { 
 					TTBT.createMessage(msg.channel.id, 'You have exited the menu');
-					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
+					TTBT.removeListener('messageCreate', waitMessage, true); 
 					session.mal.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 				}
 			}
 		})
 	}
 	
-	TTBT.on('messageCreate', waitForYourMessage);
+	TTBT.on('messageCreate', waitMessage);
 	
 	setTimeout(() => {
-		TTBT.removeListener('messageCreate', waitForYourMessage);
+		TTBT.removeListener('messageCreate', waitMessage);
 		session.mal.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	}, 30 * 1000)
 }

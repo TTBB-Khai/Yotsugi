@@ -72,11 +72,11 @@ function printWikiList(wikiData, msg) {
 }
 
 function getArticle(wikiData, msg) {
-	function waitForYourMessage (newMsg) {
+	function waitMessage (newMsg) {
 		try {
 			if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
 				if (!isNaN(newMsg.content) && newMsg.content != 0) {
-					TTBT.removeListener('messageCreate', waitForYourMessage, true);
+					TTBT.removeListener('messageCreate', waitMessage, true);
 
 					TTBT.createMessage(msg.channel.id, 
 					'**Here is your Wikipedia article on ' + wikiData.query.search[Number(newMsg.content) - 1].title + 
@@ -86,25 +86,25 @@ function getArticle(wikiData, msg) {
 				}
 				else if (newMsg.content === 'exit') { 
 					TTBT.createMessage(msg.channel.id, 'You have exited the menu');
-					TTBT.removeListener('messageCreate', waitForYourMessage, true); 
+					TTBT.removeListener('messageCreate', waitMessage, true); 
 					session.wiki.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 				}
 			}
 				
 			setTimeout(() => {
-				TTBT.removeListener('messageCreate', waitForYourMessage, true);
+				TTBT.removeListener('messageCreate', waitMessage, true);
 				session.wiki.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 			}, 30 * 1000)
 			
 		}
 		catch (err) {
 			TTBT.createMessage(msg.channel.id, 'You have exited the menu');
-			TTBT.removeListener('messageCreate', waitForYourMessage, true); 
+			TTBT.removeListener('messageCreate', waitMessage, true); 
 			session.wiki.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 		}
 	}	
 	
-	TTBT.on('messageCreate', waitForYourMessage);
+	TTBT.on('messageCreate', waitMessage);
 }
 
 TTBT.registerCommandAlias("wiki", "wikipedia");
