@@ -1,7 +1,7 @@
 # Yotsugi
 For Rei
 
-## Required
+## Required:
 * To install Node.js, click here:
   https://nodejs.org/en/
 
