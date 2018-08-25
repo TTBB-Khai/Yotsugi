@@ -22,7 +22,8 @@ $ npm i
 
 ## Not Required:
 The following links will give you instructions on how to retrieve API Keys to enable certain commands.
-\nNOTE: MyAnimeList currently has their API disabled, and there are issues with the Spotify command.
+<br />
+(NOTE: MyAnimeList currently has their API disabled, and there are issues with the Spotify command.)
 
 * Challonge: https://challonge.com/settings/developer (Must create an account)
 * Giphy: https://tinyurl.com/giphyAPI (Must create an account)
