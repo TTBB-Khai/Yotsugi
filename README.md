@@ -13,7 +13,6 @@ For Rei
 $ git clone https://github.com/TTBB-Khai/Yotsugi
 $ cd Yotsugi
 $ npm i
-$ npm start
 ```
 
 # Setting Up:
