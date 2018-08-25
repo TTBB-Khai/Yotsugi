@@ -17,7 +17,7 @@ $ npm start
 ```
 
 # Setting Up:
-1. Create a new file called .env.
+1. Create a new file called .env in the root folder.
 2. Copy and paste the contents of .env.example into .env (KEEP THE .ENV.EXAMPLE FILE AND DO NOT MODIFY IT!).
 3. Fill in the # Bot options section of the .env file (E.g. CLIENT_OWNER="TTBB#8359").
 
