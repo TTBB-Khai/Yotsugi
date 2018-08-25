@@ -1,26 +1,26 @@
-## Yotsugi
+# Yotsugi
 For Rei
 
-# Required
+## Required
 * To install Node.js, click here:
   https://nodejs.org/en/
 
 * To retrieve a CLIENT_TOKEN, click here and create a new app: 
   https://discordapp.com/developers/applications/
 
-# Installation Instructions:
+## Installation Instructions:
 ```bash
 $ git clone https://github.com/TTBB-Khai/Yotsugi
 $ cd Yotsugi
 $ npm i
 ```
 
-# Setting Up:
+## Setting Up:
 1. Create a new file called .env in the root folder.
 2. Copy and paste the contents of .env.example into .env (KEEP THE .ENV.EXAMPLE FILE AND DO NOT MODIFY IT!).
 3. Fill in the # Bot options section of the .env file (E.g. CLIENT_OWNER="TTBB#8359").
 
-# Not Required:
+## Not Required:
 The following links will give you instructions on how to retrieve API Keys to enable certain commands.
 NOTE: MyAnimeList currently has their API disabled and there are issues with the Spotify command.
 
@@ -32,4 +32,4 @@ NOTE: MyAnimeList currently has their API disabled and there are issues with the
 * To enable image commands (E.g. Joseph command), install GraphicsMagick here: 
   http://www.graphicsmagick.org/download.html
 
-# Note: This is not a final product and all current issues will be resolved in the near future.
+## Note: This is not a final product and all current issues will be resolved in the near future.
