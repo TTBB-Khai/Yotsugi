@@ -1,5 +1,5 @@
 # Yotsugi
-For Rei
+Discord bot in progress.
 
 ## Required:
 * To install Node.js, click here:
