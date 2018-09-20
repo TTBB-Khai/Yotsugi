@@ -1,5 +1,3 @@
-//'use strict';
-
 const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 

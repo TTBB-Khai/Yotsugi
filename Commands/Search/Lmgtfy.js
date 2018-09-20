@@ -1,6 +1,5 @@
 //'use strict';
 
-const gm = require('gm');
 const path = require('path');
 const fetch = require('node-fetch');
 global.Promise = require('bluebird');

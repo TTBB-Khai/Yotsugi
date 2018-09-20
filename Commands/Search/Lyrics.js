@@ -41,7 +41,7 @@ function loadSongList(song, msg) {
 			return response.json();
 		else {
 			session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
-			throw new TypeError("No JSON to parse!");
+			console.log("No JSON to parse!");
 		}
 	})
 	.then(response => {
@@ -106,7 +106,7 @@ function loadLyrics(song, msg) {
 	async function getURL() {
 		try {
 			let response = await fetch(song.result.url);
-			let text = response.text();
+			let text = await response.text();
 			let $ = cheerio.load(text);
 			return $('.lyrics').text().trim();
 		}
@@ -121,14 +121,14 @@ function loadLyrics(song, msg) {
 	Promise.resolve(getURL())
 	.then(data => printLyrics(data, msg, song))
 	.catch(err => {
-		TTBT.createMessage(msg.channel.id, "No songs found with this search.");
+		ttbt.createmessage(msg.channel.id, "no songs found with this search.");
 		session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 	})
 }
 
 function printLyrics(lyricData, msg, song) {
 	let output = (lyricData.length < 2000) ? '```Markdown\n' + lyricData + '\n```' 
-	: 'These lyrics are too long to fit in a discord message ):\n **Here is a link to the full lyrics: ' + song.result.url + '**';
+	: 'These lyrics are too long to fit in a discord message ):\n**Here is a link to the full lyrics: ' + song.result.url + '**';
 	
 	TTBT.createMessage(msg.channel.id, output);
 	session.genius.user.filter((user) => {return user.id === msg.author.id})[0].session = false;

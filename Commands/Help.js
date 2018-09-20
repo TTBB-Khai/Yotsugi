@@ -9,6 +9,7 @@ var helpCommand = TTBT.registerCommand("help", (msg) => {
 				+ " * General *\n"
 				+ "<help - Brings up this message>\n"
 				+ "<info - My information>\n"
+				+ "<stats - My stats>\n"
 				+ "<avatar - Brings up a user\'s avatar>\n"
 				+ "<icon - Brings up the current server icon>\n"
 				+ "<profile - Brings up a user\'s information>\n"

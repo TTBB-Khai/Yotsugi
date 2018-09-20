@@ -91,7 +91,7 @@ function refreshAccessToken(msg) {
 			}
 		};
 		
-		res.render(path.join(process.cwd(), 'Views/Spotify/Refresh.ejs'));
+		res.render(path.join(process.cwd(), 'views/Spotify/Refresh.ejs'));
 		
 		request.post(options, (error, response) => {
 			console.log("Status code:", response.statusCode);
