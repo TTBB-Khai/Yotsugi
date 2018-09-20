@@ -33,4 +33,4 @@ The following links will give you instructions on how to retrieve API Keys to en
 * To enable image commands (E.g. Joseph command), install GraphicsMagick here: 
   http://www.graphicsmagick.org/download.html
 
-## Note: This is not a final product and all current issues will be resolved in the near future.
+## This is not a final product and all current issues will be resolved in the near future.
