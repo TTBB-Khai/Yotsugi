@@ -1,8 +1,7 @@
 //'use strict';
 
 TTBT.registerCommand("hackban", (msg, args) => {
-	if (args.length === 0)
-		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "hackban [USER ID]**";
+	if (args.length === 0) return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "hackban [USER ID]**";
 	
 	let banPerms = msg.channel.guild.members.get(TTBT.user.id).permission.has("banMembers");
 	if (!banPerms) return "I do not have permission to ban users in this server."

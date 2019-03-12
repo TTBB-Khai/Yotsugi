@@ -6,9 +6,7 @@ const { modulus: mod } = require(path.join(process.cwd(), 'utils', 'Modulus.js')
 TTBT.registerCommand("rps", (msg, args) => {
 	let RPS = [{id:0, name:"Paper", code:'p', emote:":hand_splayed:"}, {id:1, name:"Rock", code:'r', emote:":fist:"}, {id:2, name:"Scissors", code:'s', emote:":v:"}];
 	let randomRPS = RPS[Math.random() * RPS.length | 0];
-	let choice = RPS.filter(function (rps) {
-		return (rps.code === args.join(" ").charAt(0).toLowerCase());
-	});
+	let choice = RPS.filter(rps => rps.code === args.join(" ").charAt(0).toLowerCase());
 
 	if (choice.length > 0) {
 		let result = mod((choice[0].id - randomRPS.id), 3);
@@ -23,7 +21,7 @@ TTBT.registerCommand("rps", (msg, args) => {
 				+ output;
 	}
 	
-	return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "rps [r/p/s]**";
+	return `Incorrect usage. Correct usage: **${process.env['CLIENT_PREFIX']}rps [r/p/s]**`;
 	
 },	{
 		cooldown: 3000,

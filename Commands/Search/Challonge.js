@@ -8,7 +8,7 @@ global.Promise = require('bluebird');
 
 TTBT.registerCommand("challonge", (msg, args) => {
 	if(args.length === 0)
-		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "challonge [SUBDOMAIN HERE]**";
+		return `Incorrect usage. Correct usage: **${process.env['CLIENT_PREFIX']}challonge [SUBDOMAIN HERE]**`;
 	
 	if (typeof(session.challonge.user.filter((user) => {return user.id === msg.author.id})[0]) === 'undefined')
 		session.challonge.user.push({"id": msg.author.id, "session": false});
@@ -34,7 +34,7 @@ function loadChallongeList(subdomain, msg) {
 	
 	TTBT.sendChannelTyping(msg.channel.id);
 	
-	fetch('https://api.challonge.com/v1/tournaments.json?api_key=' + process.env['CHALLONGE_API_KEY'] + '&state=ended&subdomain=' + subdomain)
+	fetch(`https://api.challonge.com/v1/tournaments.json?api_key=${process.env['CHALLONGE_API_KEY']}&state=ended&subdomain=${subdomain}`)
 	.then((response, err) => {
 		if (response.ok)
 			return response.json();
@@ -122,8 +122,7 @@ function loadTournament(sortedList, challongeData, msg) {
 
 function printResults(lbData, challongeData, msg) {
 	let ranks = {'rank': []};
-	let results = "```Markdown\n" 
-		+ " * Results for " + challongeData.tournament.name + " (up to top 8) * \n\n";
+	let results = "```Markdown\n*Results for " + challongeData.tournament.name + " (up to top 8)*\n\n";
 		
 	for (let i = 0; i < lbData.length; i++) {
 		if (lbData[0].participant.final_rank !== null) {
@@ -142,12 +141,10 @@ function printResults(lbData, challongeData, msg) {
 		for (let i = 0; i < range; i++)
 			results += "[" + sortedRanks[i].placing + "] " + sortedRanks[i].player + "\n";
 		
-		TTBT.createMessage(msg.channel.id, results + "```\n" 
-			+ "**Bracket Link: " + challongeData.tournament.full_challonge_url + " **");
+		TTBT.createMessage(msg.channel.id, results + "```\n**Bracket Link: " + challongeData.tournament.full_challonge_url + " **");
 	}
 	else
-		TTBT.createMessage(msg.channel.id, "This tournament is still ongoing\n```\n" 
-			+ "**Bracket Link: " + challongeData.tournament.full_challonge_url + " **");
+		TTBT.createMessage(msg.channel.id, "This tournament is still ongoing\n```\n**Bracket Link: " + challongeData.tournament.full_challonge_url + "**");
 	
 	session.challonge.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
 }

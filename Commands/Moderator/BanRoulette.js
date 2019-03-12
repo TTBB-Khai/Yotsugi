@@ -8,9 +8,7 @@ TTBT.registerCommand("banRoulette", (msg, args) => {
 	if (!msg.channel.guild)
 		return "This command only works in a server";
 	
-	let getUser = msg.channel.guild.members.filter((mems) => { 
-		return (mems.username.toLowerCase() === args.join(" ").toLowerCase()) || (mems.id === args.join(" "));
-	});
+	let getUser = msg.channel.guild.members.filter(mems => mems.username.toLowerCase() === args.join(" ").toLowerCase() || mems.id === args.join(" "));
 	let user = "No user found";
 		
 	if (args.length > 0)

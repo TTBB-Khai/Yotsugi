@@ -16,7 +16,7 @@ TTBT.registerCommand("drink", (msg, args) => {
 		9: ":beers:"
 	}
 	
-	return "**" + user + " Drink some** " + lookupDrink[random];
+	return `**${user} Drink some **${lookupDrink[random]}`;
 },	{
 		cooldown: 3000,
 		caseInsensitive: true,

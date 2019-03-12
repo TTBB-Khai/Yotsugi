@@ -6,10 +6,10 @@ TTBT.registerCommand("karaoke", (msg) => {
 	if (!msg.channel.guild)
 		return "This command only works in a server.";
 	
-	if (typeof(session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0]) === 'undefined')
+	if (typeof(session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0]) === 'undefined')
 		session.karaoke.guild.push({"id": msg.channel.guild.id, "session": false, "current": "N/A", "next": "N/A"});
 		
-	if (!session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].session) {
+	if (!session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].session) {
 		let singers = [];
 		
 		TTBT.createMessage(msg.channel.id, "**Karaoke has started!** Hosted by the lovely, **" + msg.author.username + "**!\n"
@@ -17,7 +17,7 @@ TTBT.registerCommand("karaoke", (msg) => {
 			+ "Type **'queue'** to peek at the queue!\n" 			
 			+ "If you are the host and need help with the sub commands, type **" + process.env['CLIENT_PREFIX'] + "help karaoke**");
 			
-		session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].session = true;
+		session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].session = true;
 		getSingers(msg, singers);
 	}
 	else
@@ -32,9 +32,9 @@ TTBT.registerCommand("karaoke", (msg) => {
 	}
 );
 
-function getSingers(msg, singers) {
+const getSingers = (msg, singers) => {
 	
-	function waitMessage (newMsg) {
+	const waitMessage = (newMsg) => {
 		if (newMsg.channel.id === msg.channel.id) {
 			const lookupCommand = {
 				'🎤' : () => {
@@ -65,17 +65,23 @@ function getSingers(msg, singers) {
 						skipQueue(msg, singers);
 					}			
 				},
+				'clear': () => {
+					if (newMsg.author.id === msg.author.id) {
+						TTBT.removeListener('messageCreate', waitMessage, true);
+						clearQueue(msg, singers);
+					}			
+				},
 				'end': () => {
 					TTBT.removeListener('messageCreate', waitMessage, true);
 					if (singers.length > 0) {
 						TTBT.createMessage(msg.channel.id, "**WARNING:** There are still users in the queue! Are you sure you want to end this session?\n"
 							+ "**Type 'yes' to end the session or type 'no' to continue it.**");
 							
-							function areYouSure(newerMsg) {
+							const areYouSure = (newerMsg) => {
 								if (newerMsg.channel.id === msg.channel.id && newerMsg.author.id === msg.author.id) {
 									if (newerMsg.content.toLowerCase() === 'yes') {
 										TTBT.removeListener('messageCreate', areYouSure, true);
-										delete singers;
+										singers = null;
 										endKaraoke(msg);
 									}
 									else if (newerMsg.content.toLowerCase() === 'no') {
@@ -106,19 +112,22 @@ function getSingers(msg, singers) {
 	TTBT.on('messageCreate', waitMessage);
 }
 
-function peekQueue(msg, singers) {
+const peekQueue = (msg, singers) => {
 	
 	if (singers.length === 0)
 		printEmpty(msg);
 	else {
-		session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].next = singers[0];
+		session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].next = singers[0];
 		
 		let text = "**Host: " + msg.author.username + "**\n\n"
-			+ "**Type ':microphone:' to join!**\n"
+			+ "**__Everyone__**\n"
+			+ "**Type ':microphone:' to join!**\n\n"
+			+ "**__Host__**\n"
 			+ "Type **'start'** to allow the next person in queue to sing!\n"
-			+ "Type **'skip'** to skip the next person in queue!\n\n"
-			+ ":musical_note: **Currently Singing:** " + session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].current + "\n"
-			+ ":arrow_right: **Up Next:** " + session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].next + "\n"
+			+ "Type **'skip'** to skip the next person in queue!\n"
+			+ "Type **'clear'** to clear the entire queue!\n\n"
+			+ ":musical_note: **Currently Singing:** " + session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].current + "\n"
+			+ ":arrow_right: **Up Next:** " + session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].next + "\n"
 			+ "**\n__Current queue:__**\n ```";
 
 		for (let i = 0; i < singers.length; i++)
@@ -128,20 +137,20 @@ function peekQueue(msg, singers) {
 	}
 }
 
-function startQueue(msg, singers) {
+const startQueue = (msg, singers) => {
 	if (singers.length === 0)
 		printEmpty(msg);
 	else {
-		session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].current = singers.shift();
-		TTBT.createMessage(msg.channel.id, "It is now **" + session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].current 
+		session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].current = singers.shift();
+		TTBT.createMessage(msg.channel.id, "It is now **" + session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].current 
 		+ "'s** turn to sing!\n");
 	}
 	
 	getSingers(msg, singers);
 }
 
-function skipQueue(msg, singers) {
-	session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].current = "N/A";
+const skipQueue = (msg, singers) => {
+	session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].current = "N/A";
 	
 	if (singers.length === 0)
 		printEmpty(msg);
@@ -151,19 +160,27 @@ function skipQueue(msg, singers) {
 	getSingers(msg, singers);
 }  
 
-function printEmpty(msg) {
+const clearQueue = (msg, singers) => {
+	singers.length = 0;
+	session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].current = "N/A";
+	session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].next = "N/A";
+	printEmpty(msg);
+	getSingers(msg, singers);
+}
+
+const printEmpty = (msg) => {
 	TTBT.createMessage(msg.channel.id,  ":musical_note: **Currently Singing:** " 
-		+ session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].current + " \n\n" 
+		+ session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].current + " \n\n" 
 		+ "The queue is now empty! Type ':microphone:' to join the queue!\n"
 		+ "Or if you are the host, type **'end'** to end this session.");
 		
-	session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].current = "N/A";
-	session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].next = "N/A";
+	session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].current = "N/A";
+	session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].next = "N/A";
 }
 
-function endKaraoke(msg) {
+const endKaraoke = (msg) => {
 	TTBT.createMessage(msg.channel.id, "**Karaoke has now ended. Thank you for joining!**");
-	session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].session = false;
-	session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].current = "N/A";
-	session.karaoke.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].next = "N/A";
+	session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].session = false;
+	session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].current = "N/A";
+	session.karaoke.guild.filter(server => server.id === msg.channel.guild.id)[0].next = "N/A"
 }

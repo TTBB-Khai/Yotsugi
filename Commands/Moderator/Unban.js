@@ -1,8 +1,7 @@
 //'use strict';
 
 TTBT.registerCommand("unban", (msg, args) => {
-	if (args.length === 0)
-		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "unban [USER ID]**";
+	if (args.length === 0) return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "unban [USER ID]**";
 	
 	let banPerms = msg.channel.guild.members.get(TTBT.user.id).permission.has("banMembers");
 	if (!banPerms) return "I do not have permission to unban users in this server."

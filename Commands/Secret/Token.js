@@ -45,7 +45,7 @@ TTBT.registerCommand("token", (msg) => {
 	
 });
 
-function getRefreshToken(msg) {
+const getRefreshToken = (msg) => {
 	app.get("/callback", (req, res) => {
 		console.log(req.query);
 	  var options = {
@@ -78,7 +78,7 @@ function getRefreshToken(msg) {
 	});
 }
 
-function refreshAccessToken(msg) {
+const refreshAccessToken = (msg) => {
 	app.get("/callback", (req, res) => {
 		var options = {
 			url: "https://accounts.spotify.com/api/token",
@@ -97,7 +97,7 @@ function refreshAccessToken(msg) {
 			console.log("Status code:", response.statusCode);
 			if (response.statusCode > 399) {
 				TTBT.createMessage(msg.channel.id, ":x: | ERROR: COULD NOT REFRESH ACCESS TOKEN! Your refresh token may be invalid!");
-				session === false;
+				session = false;
 			}
 			else {
 				let body = JSON.parse(response.body);
@@ -108,7 +108,7 @@ function refreshAccessToken(msg) {
 		})
 	})
 	
-	setTimeout(refreshAccessToken =>{
+	setTimeout(refreshAccessToken => {
 		opn(process.env['SPOTIFY_REDIRECT_URI']);
 	}, 3600 * 1000);
 }

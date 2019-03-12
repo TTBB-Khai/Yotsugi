@@ -10,10 +10,10 @@ TTBT.registerCommand("raffle", (msg) => {
 	if (!msg.channel.guild)
 		return "This command only works in a server.";
 	
-	if (typeof(session.raffle.guild.filter((server) => {return server.id === msg.channel.guild.id})[0]) === 'undefined')
+	if (typeof(session.raffle.guild.filter(server => server.id === msg.channel.guild.id)[0]) === 'undefined')
 		session.raffle.guild.push({"id": msg.channel.guild.id, "session": false});
 	
-	if (!session.raffle.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].session) {
+	if (!session.raffle.guild.filter(server => server.id === msg.channel.guild.id)[0].session) {
 		TTBT.createMessage(msg.channel.id, "Raffle has started! Type **'raffle'** to enter!\nRaffle ends in **60 seconds**!")
 		.then(message => wait(30000)
 		.then(() => message.channel.editMessage(message.id, "Raffle has started! Type **'raffle'** to enter!\nRaffle ends in **30 seconds**!")
@@ -26,7 +26,7 @@ TTBT.registerCommand("raffle", (msg) => {
 		))))))))
 		.catch(err => "No perms")
 		
-		session.raffle.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].session = true;
+		session.raffle.guild.filter(server => server.id === msg.channel.guild.id)[0].session = true;
 		let rafflers = [];
 		getRaffles(msg, rafflers);
 	}
@@ -43,8 +43,8 @@ TTBT.registerCommand("raffle", (msg) => {
 	}
 );
 
-function getRaffles(msg, rafflers) {
-	function waitMessage (newMsg) {
+const getRaffles = (msg, rafflers) => {
+	const waitMessage = (newMsg) => {
 		if (newMsg.channel.id === msg.channel.id) {
 			if (newMsg.content.toLowerCase() === 'raffle') {
 				if (rafflers.indexOf(newMsg.author.username + '#' + newMsg.author.discriminator) === -1) {
@@ -92,7 +92,7 @@ function getRaffles(msg, rafflers) {
 	delete(promiseData);
 }
 
-function getWinner(msg, rafflers) {
+const getWinner = async (msg, rafflers) => {
 	
 	if (rafflers.length > 0) {
 		let notChoice = "";
@@ -112,16 +112,16 @@ function getWinner(msg, rafflers) {
 			choice = rafflers[winner];
 		}
 		
-		TTBT.createMessage(msg.channel.id, "Raffle has ended! The winner is...\n" + notChoice)
-		.then(message => wait(1000).then(() => message.channel.editMessage(message.id, "Raffle has ended! The winner is...\n" + almostChoice)
-		.then(message => wait(2000).then(() => message.channel.editMessage(message.id, "Raffle has ended! The winner is...\n" + closeChoice)
-		.then(message => wait(1000).then(() => message.channel.editMessage(message.id, "Raffle has ended! The winner is...\n :tada: **" + choice + "** :tada:")
+		TTBT.createMessage(msg.channel.id, `Raffle has ended! The winner is...\n ${notChoice}`)
+		.then(message => wait(1000).then(() => message.channel.editMessage(message.id, `Raffle has ended! The winner is...\n ${almostChoice}`)
+		.then(message => wait(2000).then(() => message.channel.editMessage(message.id, `Raffle has ended! The winner is...\n ${closeChoice}`)
+		.then(message => wait(1000).then(() => message.channel.editMessage(message.id, `Raffle has ended! The winner is...\n :tada: **${choice}** :tada:`)
 		))))))
 		.catch(err => "No perms")
 	}
 	else
 		TTBT.createMessage(msg.channel.id, "Nobody entered the raffle, so nobody wins. :frowning:");
 	
-	session.raffle.guild.filter((server) => {return server.id === msg.channel.guild.id})[0].session = false;
+	session.raffle.guild.filter(server => server.id === msg.channel.guild.id)[0].session = false;
 	delete rafflers;
 }
