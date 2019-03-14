@@ -20,7 +20,7 @@ TTBT.registerCommand("mania", (msg, args) => {
 	}
 );
 
-function getData(user, msg) {
+const getData = (user, msg) => {
 	
 	TTBT.sendChannelTyping(msg.channel.id);
 

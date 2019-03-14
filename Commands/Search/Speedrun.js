@@ -9,12 +9,12 @@ TTBT.registerCommand("speedrun", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "speedrun [GAME HERE]**";
 	
-	if (typeof(session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0]) === 'undefined')
+	if (typeof(session.speedrun.user.filter(user => user.id === msg.author.id)[0]) === 'undefined')
 		session.speedrun.user.push({"id": msg.author.id, "session": false});
 	
-	if (!session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session) {
+	if (!session.speedrun.user.filter(user => user.id === msg.author.id)[0].session) {
 		let game = args.join(" ").replace(/\s/g, "%20");
-		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = true;
+		session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = true;
 		loadGameList(game, msg);
 	}
 	else
@@ -30,7 +30,7 @@ TTBT.registerCommand("speedrun", (msg, args) => {
 	}
 );
 
-function loadGameList(game, msg) {
+const loadGameList = (game, msg) => {
 	
 	TTBT.sendChannelTyping(msg.channel.id);
 		
@@ -39,7 +39,7 @@ function loadGameList(game, msg) {
 		if (response.ok)
 			return response.json();
 		else {
-			session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 			throw new TypeError("No JSON to parse!");
 		}
 	})
@@ -51,15 +51,15 @@ function loadGameList(game, msg) {
 		if (response.data.length !== 0) 
 			getGame(response, msg);
 		else
-			session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 	})
 	.catch(err => {
-		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+		session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 		TTBT.createMessage(msg.channel.id, "No games found with this search.");
 	})
 }
 
-function printGameList(srData, msg) {
+const printGameList = (srData, msg) => {
 	let games = '```Markdown\n';
 	games += srData.data.length === 0 ? 'No games found with this search' : ' * Related Games * \n\n';
 		
@@ -69,14 +69,14 @@ function printGameList(srData, msg) {
 	if (srData.data.length !== 0)
 		games += '\n' + '> Type the number of your choice into chat OR type "exit" to exit the menu';
 	else
-		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+		session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 	
 	TTBT.createMessage(msg.channel.id, games + '```');
 	
 }
 
-function getGame(srData, msg) {
-	function waitMessage (newMsg) {
+const getGame = (srData, msg) => {
+	const waitMessage = (newMsg) => {
 		if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
 			if (!isNaN(newMsg.content) && newMsg.content != 0 && Number(newMsg.content) <= srData.data.length) {
 				TTBT.removeListener('messageCreate', waitMessage, true); 
@@ -85,7 +85,7 @@ function getGame(srData, msg) {
 			else if (newMsg.content === 'exit') { 
 				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 				TTBT.removeListener('messageCreate', waitMessage, true); 
-				session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+				session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 			}
 		}
 	}	
@@ -94,12 +94,12 @@ function getGame(srData, msg) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitMessage);
-		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+		session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 	}, 30 * 1000)
 	
 }
 
-function loadGame(game, msg) {
+const loadGame = (game, msg) => {
 
 	TTBT.sendChannelTyping(msg.channel.id);
 	
@@ -108,7 +108,7 @@ function loadGame(game, msg) {
 		if (response.ok)
 			return response.json();
 		else {
-			session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 			throw new TypeError("No JSON to parse!");
 		}
 	})
@@ -120,12 +120,12 @@ function loadGame(game, msg) {
 		getCategory(response, msg, game);
 	})
 	.catch(err => {
-		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+		session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 		TTBT.createMessage(msg.channel.id, 'Something went wrong :/');
 	})
 }
 
-function printCategories(categoryData, msg) {
+const printCategories = (categoryData, msg) => {
 	let categories = '```Markdown\n'
 		+ ' * Categories * \n\n';
 		
@@ -136,7 +136,7 @@ function printCategories(categoryData, msg) {
 	TTBT.createMessage(msg.channel.id, categories);
 }
 
-function getCategory(categoryData, msg, game) {
+const getCategory = (categoryData, msg, game) => {
 	function waitMessage (newMsg) {
 		if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
 			if (!isNaN(newMsg.content) && newMsg.content != 0 && Number(newMsg.content) <= categoryData.data.length) {
@@ -146,7 +146,7 @@ function getCategory(categoryData, msg, game) {
 			else if (newMsg.content === 'exit') { 
 				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 				TTBT.removeListener('messageCreate', waitMessage, true); 
-				session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+				session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 			}
 		}
 	}	
@@ -155,11 +155,11 @@ function getCategory(categoryData, msg, game) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitMessage);
-		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+		session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 	}, 30 * 1000)
 }
 
-function loadLeaderBoard(category, msg, game) {
+const loadLeaderBoard = (category, msg, game) => {
 
 	TTBT.sendChannelTyping(msg.channel.id);
 	
@@ -168,18 +168,18 @@ function loadLeaderBoard(category, msg, game) {
 		if (response.ok)
 			return response.json();
 		else {
-			session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 			throw new TypeError("No JSON to parse!");
 		}
 	})
 	.then(response => printLeaderBoard(response, msg, game, category))
 	.catch(err => {
 		TTBT.createMessage(msg.channel.id, ':x: | Per-level speedrun leaderboards are not yet available');
-		session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+		session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 	})
 }
 
-function printLeaderBoard(lbData, msg, game, category) {
+const printLeaderBoard = (lbData, msg, game, category) => {
 	let runners = '```Markdown\n';
 	runners += lbData.data.players.data.length === 0 ? 'There are no runs for this category yet' 
 		: ' * Top 3 Speedrunners for ' + game.names.international + ', ' + category.name + ' * \n\n';
@@ -191,7 +191,7 @@ function printLeaderBoard(lbData, msg, game, category) {
 	}
 	
 	TTBT.createMessage(msg.channel.id, runners + '```');
-	session.speedrun.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+	session.speedrun.user.filter(user => user.id === msg.author.id)[0].session = false;
 }
 
 TTBT.registerCommandAlias("sr", "speedrun");

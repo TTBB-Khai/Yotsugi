@@ -22,7 +22,7 @@ TTBT.registerCommand("obama", (msg, args) => {
 	
 	let line = text.split('\n');
 	let lineToTest = 0;
-	let sortedText = line.length > 0 ? line.sort(function(a, b){return b.length - a.length}) : text;
+	let sortedText = line.length > 0 ? line.sort((a, b) => b.length - a.length) : text;
 	
 	for (let i = 0; i < sortedText.length; i++) {
 		if (sortedText[i].length > 8) {

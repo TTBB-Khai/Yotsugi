@@ -13,12 +13,12 @@ TTBT.registerCommand("spotify", (msg, args) => {
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "spotify [ARTIST HERE]**";
 	
-	if (typeof(session.spotify.user.filter((user) => {return user.id === msg.author.id})[0]) === 'undefined')
+	if (typeof(session.spotify.user.filter(user => user.id === msg.author.id)[0]) === 'undefined')
 		session.spotify.user.push({"id": msg.author.id, "session": false});
 	
-	if (!session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session) {
+	if (!session.spotify.user.filter(user => user.id === msg.author.id)[0].session) {
 		let artist = args.join(" ").replace(/\s/g, "%20");
-		session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = true;
+		session.spotify.user.filter(user => user.id === msg.author.id)[0].session = true;
 		loadArtistList(artist, msg);
 	}
 	else
@@ -34,7 +34,7 @@ TTBT.registerCommand("spotify", (msg, args) => {
 	}
 );
 
-function loadArtistList(artist, msg) {
+const loadArtistList = (artist, msg) => {
 
 	TTBT.sendChannelTyping(msg.channel.id);
 		
@@ -48,7 +48,7 @@ function loadArtistList(artist, msg) {
 		if (response.ok)
 			return response.json();
 		else {
-			session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			session.spotify.user.filter(user => user.id === msg.author.id)[0].session = false;
 			throw new TypeError("No JSON to parse!");
 		}
 	})
@@ -60,7 +60,7 @@ function loadArtistList(artist, msg) {
 		if (response.artists.items.length !== 0) 
 			getArtistId(response, msg);
 		else
-			session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+			session.spotify.user.filter(user => user.id === msg.author.id)[0].session = false;
 	})
 	.catch(err => {
 		if (msg.author.id === process.env['CLIENT_OWNERID'])
@@ -68,11 +68,11 @@ function loadArtistList(artist, msg) {
 		else
 			TTBT.createMessage(msg.channel.id, "The owner of this bot does not have this command enabled yet!");
 		throw err;
-		session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false;
+		session.spotify.user.filter(user => user.id === msg.author.id)[0].session = false;
 	})
 }
 
-function printArtistList(spotifyData, msg) {
+const printArtistList = (spotifyData, msg) => {
 	let artists = '```Markdown\n';
 	artists += spotifyData.artists.items.length === 0 ? 'No artists found with this search' : ' * Related Artists * \n\n';
 		
@@ -82,13 +82,13 @@ function printArtistList(spotifyData, msg) {
 	if (spotifyData.artists.items.length !== 0)
 		artists += '\n' + '> Type the number of your choice into chat OR type "exit" to exit the menu';
 	else
-		session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false
+		session.spotify.user.filter(user => user.id === msg.author.id)[0].session = false
 	
 	TTBT.createMessage(msg.channel.id, artists + '```');
 }
 
-function getArtistId(spotifyData, msg) {
-	function waitMessage (newMsg) {
+const getArtistId = (spotifyData, msg) => {
+	const waitMessage = (newMsg) => {
 		if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
 			if (!isNaN(newMsg.content) && newMsg.content != 0) {
 				TTBT.removeListener('messageCreate', waitMessage, true); 
@@ -97,7 +97,7 @@ function getArtistId(spotifyData, msg) {
 			else if (newMsg.content === 'exit') { 
 				TTBT.createMessage(msg.channel.id, 'You have exited the menu');
 				TTBT.removeListener('messageCreate', waitMessage, true); 
-				session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false
+				session.spotify.user.filter(user => user.id === msg.author.id)[0].session = false
 			}
 		}
 	}	
@@ -106,11 +106,11 @@ function getArtistId(spotifyData, msg) {
 	
 	setTimeout(() => {
 		TTBT.removeListener('messageCreate', waitMessage);
-		session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false
+		session.spotify.user.filter(user => user.id === msg.author.id)[0].session = false
 	}, 30 * 1000)
 }
 
-function loadArtistInfo(artistData, msg) {
+const loadArtistInfo = (artistData, msg) => {
 	TTBT.createMessage(msg.channel.id, artistData.external_urls.spotify);
-	session.spotify.user.filter((user) => {return user.id === msg.author.id})[0].session = false
+	session.spotify.user.filter(user => user.id === msg.author.id)[0].session = false
 }
