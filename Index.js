@@ -1,9 +1,12 @@
 //'use strict';
-
 const Eris = require("eris");
 const winston = require('winston');
 const path = require('path');
 const pm2 = require('pm2');
+const app = express();
+const http = require('http');
+const port = process.env.PORT || 5000;
+let server = http.createServer(app);
 
 require('dotenv-safe').config({
   path: path.join(process.cwd(), '.env'),
@@ -90,3 +93,5 @@ TTBT.on("ready", () => { console.log("Ready!") })
 TTBT.on('error', logger.info);
 
 TTBT.connect();
+
+server.listen(port, () => console.log(`starting on port ${port}`));
