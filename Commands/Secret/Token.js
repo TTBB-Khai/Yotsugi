@@ -2,7 +2,7 @@
 
 const path = require('path')
 const spotify = require(path.join(process.cwd(), 'res', 'data', 'spotify.json'));
-const opn = require("opn");
+//const opn = require("opn");
 var express = require("express");
 var request = require("request");
 
@@ -23,7 +23,7 @@ TTBT.registerCommand("token", (msg) => {
 	if (session)
 		return "Your access tokens are already being automatically refreshed!";
 
-	opn(process.env['SPOTIFY_REDIRECT_URI']);
+	//opn(process.env['SPOTIFY_REDIRECT_URI']);
 
 	app.get("/", (req, res) => {
 	  var authUrl = "https://accounts.spotify.com/authorize?" +
@@ -108,8 +108,8 @@ const refreshAccessToken = (msg) => {
 		})
 	})
 	
-	setTimeout(refreshAccessToken => {
-		opn(process.env['SPOTIFY_REDIRECT_URI']);
-	}, 3600 * 1000);
+	// setTimeout(refreshAccessToken => {
+		// opn(process.env['SPOTIFY_REDIRECT_URI']);
+	// }, 3600 * 1000);
 }
 
