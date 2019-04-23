@@ -76,15 +76,15 @@ TTBT = new Eris.CommandClient(process.env['CLIENT_TOKEN'],
 	}
 );
 
-require('./commands/!meta/loader');
-require('./commands/general/!meta/loader');
-require('./commands/moderator/!meta/loader');
-require('./commands/fun/!meta/loader');
-require('./commands/utility/!meta/loader');
-require('./commands/search/!meta/loader');
-require('./commands/gaming/!meta/loader');
-require('./commands/image/!meta/loader');
-require('./commands/secret/!meta/loader');
+require('./Commands/!meta/loader');
+require('./Commands/general/!meta/loader');
+require('./Commands/moderator/!meta/loader');
+require('./Commands/fun/!meta/loader');
+require('./Commands/utility/!meta/loader');
+require('./Commands/search/!meta/loader');
+require('./Commands/gaming/!meta/loader');
+require('./Commands/image/!meta/loader');
+require('./Commands/secret/!meta/loader');
 
 TTBT.on("ready", () => { console.log("Ready!") })
 TTBT.on('error', logger.info);
