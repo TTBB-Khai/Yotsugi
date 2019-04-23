@@ -1,4 +1,5 @@
 //'use strict';
+const express = require('express');
 const Eris = require("eris");
 const winston = require('winston');
 const path = require('path');
