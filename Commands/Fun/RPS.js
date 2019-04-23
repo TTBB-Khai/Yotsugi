@@ -10,9 +10,9 @@ TTBT.registerCommand("rps", (msg, args) => {
 
 	if (choice.length > 0) {
 		let result = mod((choice[0].id - randomRPS.id), 3);
-		let output = result == 0 ? 
+		let output = result === 0 ? 
 			choice[0].emote + " **It's a tie!** " + randomRPS.emote 
-			: result == 1 ? 
+			: result === 1 ? 
 				choice[0].emote + " **" + msg.author.username + " loses!** " + randomRPS.emote 
 				: choice[0].emote + " **" + msg.author.username + " wins!** " + randomRPS.emote;
 		
