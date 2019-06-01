@@ -21,42 +21,42 @@ const logger = new (winston.Logger)({
   ]
 });
 
-const processCount = parseInt(process.env['SHARDS_PROCESSES'], 10);
-const processID = parseInt(process.env['SHARDS_NODE_INSTANCE'], 10) % processCount;
-const processShards = parseInt(process.env['SHARDS_PER_PROCESS'] || 1, 10);
-const firstShardID = processID * processShards;
-const lastShardID = firstShardID + processShards - 1;
-const maxShards = processShards * processCount;
+// const processCount = parseInt(process.env['SHARDS_PROCESSES'], 10);
+// const processID = parseInt(process.env['SHARDS_NODE_INSTANCE'], 10) % processCount;
+// const processShards = parseInt(process.env['SHARDS_PER_PROCESS'] || 1, 10);
+// const firstShardID = processID * processShards;
+// const lastShardID = firstShardID + processShards - 1;
+// const maxShards = processShards * processCount;
 
-pm2.launchBus((err, bus) => {
-  if (err) 
-	  console.error(err)
+// pm2.launchBus((err, bus) => {
+  // if (err) 
+	  // console.error(err)
 
-  bus.on('process:msg', packet => {
-    const data = packet.raw
-    const payload = {
-      op: data.op,
-      d: data.d,
-      origin: packet.process.pm_id % processCount,
-      code: data.code
-    }
-    if (data.dest === -1) {
-      for (let i = 0; i < processCount; i++) {
-        pm2.sendDataToProcessId(i, {
-          type: 'process:msg',
-          data: payload,
-          topic: 'broadcast'
-        }, err => err && console.error(err))
-      }
-    } else {
-      pm2.sendDataToProcessId(data.dest, {
-        type: 'process:msg',
-        data: payload,
-        topic: 'relay'
-      }, err => err && console.error(err))
-    }
-  })
-})
+  // bus.on('process:msg', packet => {
+    // const data = packet.raw
+    // const payload = {
+      // op: data.op,
+      // d: data.d,
+      // origin: packet.process.pm_id % processCount,
+      // code: data.code
+    // }
+    // if (data.dest === -1) {
+      // for (let i = 0; i < processCount; i++) {
+        // pm2.sendDataToProcessId(i, {
+          // type: 'process:msg',
+          // data: payload,
+          // topic: 'broadcast'
+        // }, err => err && console.error(err))
+      // }
+    // } else {
+      // pm2.sendDataToProcessId(data.dest, {
+        // type: 'process:msg',
+        // data: payload,
+        // topic: 'relay'
+      // }, err => err && console.error(err))
+    // }
+  // })
+//})
 
 TTBT = new Eris.CommandClient(process.env['CLIENT_TOKEN'], 
 	{
@@ -64,9 +64,9 @@ TTBT = new Eris.CommandClient(process.env['CLIENT_TOKEN'],
 		getAllUsers: true,
 		disableEveryone: true,
 		disableEvents: true,
-		maxShards: maxShards,
-		firstShardID: firstShardID,
-		lastShardID: lastShardID
+		// maxShards: maxShards,
+		// firstShardID: firstShardID,
+		// lastShardID: lastShardID
 	}, 
 	{
 		defaultHelpCommand: false,	// KEEP THIS FALSE
