@@ -1,7 +1,7 @@
 //'use strict';
 const express = require('express');
 const Eris = require("eris");
-const winston = require('winston');
+// const winston = require('winston');
 const path = require('path');
 const pm2 = require('pm2');
 const app = express();
@@ -14,12 +14,12 @@ require('dotenv-safe').config({
   allowEmptyValues: true
 })
 
-const logger = new (winston.Logger)({
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: 'yotsugi.log' })
-  ]
-});
+// const logger = new (winston.Logger)({
+  // transports: [
+    // new winston.transports.Console(),
+    // new winston.transports.File({ filename: 'yotsugi.log' })
+  // ]
+// });
 
 // const processCount = parseInt(process.env['SHARDS_PROCESSES'], 10);
 // const processID = parseInt(process.env['SHARDS_NODE_INSTANCE'], 10) % processCount;
@@ -91,7 +91,7 @@ require('./Commands/Image/!Meta/loader');
 //require('./Commands/Secret/!Meta/loader');
 
 TTBT.on("ready", () => { console.log("Ready!") })
-TTBT.on('error', logger.info);
+// TTBT.on('error', logger.info);
 
 TTBT.connect();
 
