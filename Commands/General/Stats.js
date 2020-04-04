@@ -1,10 +1,31 @@
 require('moment-duration-format');
 const moment = require('moment');
+const path = require('path');
+const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const fs = require('fs');
+const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 
 TTBT.registerCommand("stats", (msg) => {
 	
+	if (typeof(badge.user.filter(user => user.id === msg.author.id)[0]) === 'undefined') {
+		badge.user.push({"id": msg.author.id, "badges": [":name_badge:"]});
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) console.log(err);
+		});
+	}
+	
 	if (!msg.channel.guild)
 		return "This command only works in a server.";
+	
+	if (!badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":bar_chart:")) {
+		TTBT.getDMChannel(msg.author.id).then(channel => {
+			TTBT.createMessage(channel.id, responder({badge: ":bar_chart:"}, badge.message));
+		});
+		badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":bar_chart:");
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) console.log(err);
+		});
+	}
 	
 	 return "```\n"
 		+ "- Uptime: " + moment.duration(TTBT.uptime, 'milliseconds').format('h[h] m[m] s[s]') + "\n"

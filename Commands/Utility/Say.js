@@ -1,9 +1,10 @@
 //'use strict';
 
 TTBT.registerCommand("say", (msg, args) => {
-	msg.delete();
-	if (msg.author.id === process.env['CLIENT_OWNERID'])
+	if (msg.author.id === process.env['CLIENT_OWNERID']) {
+		msg.delete();
 		return args.length === 0 ? "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "say [STRING HERE]**" : args.join(" ");
+	}
 },	{
 		cooldown: 3000,
 		caseInsensitive: true,

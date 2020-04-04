@@ -1,9 +1,17 @@
-//'use strict';
-
 const gm = require('gm');
 const path = require('path');
+const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const fs = require('fs');
+const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 
 TTBT.registerCommand("kill", (msg, args) => {
+	
+	if (typeof(badge.user.filter(user => user.id === msg.author.id)[0]) === 'undefined') {
+		badge.user.push({"id": msg.author.id, "badges": [":name_badge:"]});
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) console.log(err);
+		});
+	}
 
 	let input = args.join(' ') ? args.join(' ').replace(/<@!*(\d{17,18})>/gi, (matched, id) => {
 		let member = msg.channel.guild.members.get(id);
@@ -26,7 +34,8 @@ TTBT.registerCommand("kill", (msg, args) => {
 			'See you',
 			'in hell,',
 			input.match(/.{1,10}/g)
-		].join('\n')}, 
+		].join('\n'),
+		id: 0}, 
 		{txt: [
 			'Hasta',
 			'la vista,',
@@ -36,7 +45,8 @@ TTBT.registerCommand("kill", (msg, args) => {
 			'You\'re',
 			'fired,',
 			input.match(/.{1,10}/g)
-		].join('\n')}, 
+		].join('\n'),
+		id: 1}, 
 		{txt: [
 			'Dodge',
 			'this,',
@@ -47,18 +57,31 @@ TTBT.registerCommand("kill", (msg, args) => {
 			'...',
 			'Long live',
 			'the king'
-		].join('\n')},
+		].join('\n'),
+		id: 2},
 		{txt: [
 			'Ta ta,',
 			input.match(/.{1,10}/g)
-		].join('\n')},
+		].join('\n'),
+		id: 3},
 		{txt: [
 			'It\'s high',
 			'noon,',
 			input.match(/.{1,10}/g)
-		].join('\n')},
+		].join('\n'),
+		id: 4},
 	];
 	let randomText = text[Math.random() * text.length | 0];
+	
+	if (randomText.id === 4 && !badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":cowboy:")) {
+		TTBT.getDMChannel(msg.author.id).then(channel => {
+			TTBT.createMessage(channel.id, responder({badge: ":cowboy:"}, badge.message));
+		});
+		badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":cowboy:");
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) console.log(err);
+		});
+	}
 	
 	TTBT.sendChannelTyping(msg.channel.id);
 		

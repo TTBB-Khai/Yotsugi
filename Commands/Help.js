@@ -1,6 +1,27 @@
-//'use strict';
+const path = require('path');
+const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const fs = require('fs');
+const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 
 var helpCommand = TTBT.registerCommand("help", (msg) => {
+	
+	if (typeof(badge.user.filter(user => user.id === msg.author.id)[0]) === 'undefined') {
+		badge.user.push({"id": msg.author.id, "badges": [":name_badge:"]});
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) console.log(err);
+		});
+	}
+	
+	if (!badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":beginner:")) {
+		TTBT.getDMChannel(msg.author.id).then(channel => {
+			TTBT.createMessage(channel.id, responder({badge: ":beginner:"}, badge.message));
+		});
+		badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":beginner:");
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) console.log(err);
+		});
+	}
+	
 	TTBT.getDMChannel(msg.author.id).then(channel => {
 		  TTBT.createMessage(channel.id, "```Markdown\n"
 				+ "**Prefix**\n"
@@ -31,7 +52,6 @@ var helpCommand = TTBT.registerCommand("help", (msg) => {
 				+ "<fish - Catches a fish[WIP]>\n"
 				+ "<slot - Plays a slot machine[WIP]>\n"
 				+ "<who - Picks a random user in the server based on a given question>\n"
-				+ "<clap - Adds :clap: between every word>\n"
 				+ "<karaoke - Starts a karaoke session>\n"
 				+ "<rps - Plays rock,paper,scissors with me>\n\n"
 				+ " * Gaming *\n"
@@ -44,7 +64,6 @@ var helpCommand = TTBT.registerCommand("help", (msg) => {
 				+ "<manga - Searches information on a given manga title from myanimelist.net>\n"
 				+ "<challonge - Searches tournament information from challonge.com>\n"
 				+ "<speedrun - Searches a speedrun leaderboard from speedrun.com[WIP]>\n"
-				+ "<spotify - Searches an artist on Spotify.com>\n"
 				+ "<gif - Searches a random gif from giphy.com>\n"
 				+ "<lmgtfy - Searches a query on lmgtfy.com>\n"
 				+ "<lyrics - Searches song lyrics from genius.com>\n"
@@ -64,8 +83,6 @@ var helpCommand = TTBT.registerCommand("help", (msg) => {
 				+ "<obama - Obama pulls up a sign saying something>\n"
 				+ "<joseph - \"Next you'll say...\">\n"
 				+ "<kill - Yotsuba shoots someone>\n\n"
-				+ " * Owner *\n"
-				+ "<token - Gives you a Spotify refresh token OR refreshes your current access token>\n\n"
 				+ "Type " + process.env['CLIENT_PREFIX'] + "<help command> for more information on a command\n"
 				+ "Example: " + process.env['CLIENT_PREFIX'] + "help ping"
 				+ "```");
@@ -73,6 +90,38 @@ var helpCommand = TTBT.registerCommand("help", (msg) => {
 	
 	if (msg.channel.guild) 
 		return ":inbox_tray: | **" + msg.author.username + "**, DM sent!";
+},	{
+		caseInsensitive: true,
+		cooldown: 3000,
+		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
+		requirements: {
+			"manageMessages": true
+		}
+	}
+);
+
+helpCommand.registerSubcommand("help", (msg) => {
+	
+	if (typeof(badge.user.filter(user => user.id === msg.author.id)[0]) === 'undefined') {
+		badge.user.push({"id": msg.author.id, "badges": [":name_badge:"]});
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) console.log(err);
+		});
+	}
+	
+	if (!badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":pretzel:")) {
+		TTBT.createMessage(msg.channel.id, ":frowning: | Okay, I really can't help you any more than this....\n Is there something you need, like a :pretzel:? I can give you a :pretzel:!\n");
+		TTBT.getDMChannel(msg.author.id).then(channel => {
+			TTBT.createMessage(channel.id, responder({badge: ":pretzel:"}, badge.message));
+		});
+		badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":pretzel:");
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) console.log(err);
+		});
+	} else {
+		return "Okay, now I'm out of pretzels, so you're on your own.";
+	}
+	
 },	{
 		caseInsensitive: true,
 		cooldown: 3000,
@@ -102,6 +151,29 @@ helpCommand.registerSubcommand("info", (msg) => {
 		}
 	}
 );
+
+helpCommand.registerSubcommand("badge", (msg) => {
+	return "```Markdown\n"
+			+ "**Badge**\n\n"
+			+ " * Description *\n"
+			+ "Brings up your badges.\n"
+			+ " * Subcommands *\n"
+			+ "<list - Brings up the list of available badges>\n"
+			+ "<hints - Brings up hints to unlock the more secret badges>\n"
+			+ " * Examples *\n"
+			+ process.env['CLIENT_PREFIX'] + "badge OR " + process.env['CLIENT_PREFIX'] + "badge list OR " + process.env['CLIENT_PREFIX'] + "badge hints\n"
+			+ "```";
+},	{
+		caseInsensitive: true,
+		cooldown: 3000,
+		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
+		requirements: {
+			"manageMessages": true
+		}
+	}
+);
+
+helpCommand.registerSubcommandAlias("badges", "badge");
 
 helpCommand.registerSubcommand("avatar", (msg) => {
 	return "```Markdown\n"
@@ -491,26 +563,6 @@ helpCommand.registerSubcommand("who", (msg) => {
 			+ "<question>\n"
 			+ " * Examples *\n"
 			+ process.env['CLIENT_PREFIX'] + "who is the greatest of all time\n"
-			+ "```";
-},	{
-		caseInsensitive: true,
-		cooldown: 3000,
-		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
-		requirements: {
-			"manageMessages": true
-		}
-	}
-);
-
-helpCommand.registerSubcommand("clap", (msg) => {
-	return "```Markdown\n"
-			+ "**Clap**\n\n"
-			+ " * Description *\n"
-			+ "Adds :clap: between every word in a given string.\n"
-			+ " * Arguments *\n"
-			+ "<string>\n"
-			+ " * Examples *\n"
-			+ process.env['CLIENT_PREFIX'] + "clap how are you OR " + process.env['CLIENT_PREFIX'] + "clap\n"
 			+ "```";
 },	{
 		caseInsensitive: true,

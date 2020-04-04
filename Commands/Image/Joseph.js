@@ -1,9 +1,19 @@
-//'use strict';
-
-const gm = require('gm');
 const path = require('path');
+const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const fs = require('fs');
+const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
+const gm = require('gm');
 
 TTBT.registerCommand("joseph", (msg, args) => {
+	
+	if (typeof(badge.user.filter(user => user.id === msg.author.id)[0]) === 'undefined') {
+		badge.user.push({"id": msg.author.id, "badges": [":name_badge:"]});
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) {
+				console.log(err);
+			}
+		});
+	}
 	
 	if (args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "joseph [STRING HERE]**";
@@ -43,8 +53,24 @@ TTBT.registerCommand("joseph", (msg, args) => {
 					TTBT.createMessage(msg.channel.id, "The owner of this bot does not have this command enabled yet!");
 				return;
 			}
+			
 			 TTBT.createMessage(msg.channel.id, '', {file: buf, name: 'joseph.jpg'});
-		})
+			 
+			 if (input === "You unlocked the 🧣 badge!"
+				&& !badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":scarf:")) 
+			{
+				TTBT.getDMChannel(msg.author.id).then(channel => {
+					TTBT.createMessage(channel.id, "**You unlocked the 🧣 ba-** ***NANI!!??***\n(Type ?badge to see you badges)");
+				});
+				badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":scarf:");
+				fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+					if (err) {
+			
+			console.log(err);
+					}
+				});
+			}
+		})	
 
 },	{
 		cooldown: 3000,

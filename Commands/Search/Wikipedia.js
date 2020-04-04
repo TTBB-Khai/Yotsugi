@@ -1,12 +1,21 @@
-//'use strict';
-
 const fetch = require('node-fetch');
 const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
+const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const fs = require('fs');
+const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 
 global.Promise = require('bluebird');
 
 TTBT.registerCommand("wikipedia", (msg, args) => {
+	
+	if (typeof(badge.user.filter(user => user.id === msg.author.id)[0]) === 'undefined') {
+		badge.user.push({"id": msg.author.id, "badges": [":name_badge:"]});
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) console.log(err);
+		});
+	}
+	
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "wikipedia [SEARCH QUERY HERE]**";
 	
@@ -75,8 +84,21 @@ const getArticle = (wikiData, msg) => {
 	const waitMessage = (newMsg) => {
 		try {
 			if (newMsg.author.id === msg.author.id && newMsg.channel.id === msg.channel.id) {
-				if (!isNaN(newMsg.content) && newMsg.content != 0) {
+				if (!isNaN(newMsg.content) && newMsg.content != 0 && newMsg.content <= wikiData.query.search.length - 1) {
 					TTBT.removeListener('messageCreate', waitMessage, true);
+					
+					
+					if (wikiData.query.search[Number(newMsg.content) - 1].title === 'Badge' && newMsg.content == 1 
+						&& !badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":books:")) 
+					{
+							TTBT.getDMChannel(msg.author.id).then(channel => {
+								TTBT.createMessage(channel.id, responder({badge: ":books:"}, badge.message));
+							});
+							badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":books:");
+							fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+								if (err) console.log(err);
+							});
+					}
 
 					TTBT.createMessage(msg.channel.id, 
 					'**Here is your Wikipedia article on ' + wikiData.query.search[Number(newMsg.content) - 1].title + 

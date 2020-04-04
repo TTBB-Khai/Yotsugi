@@ -1,11 +1,20 @@
-//'use strict';
-
 const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 const fetch = require('node-fetch');
+const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const fs = require('fs');
+const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 global.Promise = require('bluebird');
 
 TTBT.registerCommand("speedrun", (msg, args) => {
+	
+	if (typeof(badge.user.filter(user => user.id === msg.author.id)[0]) === 'undefined') {
+		badge.user.push({"id": msg.author.id, "badges": [":name_badge:"]});
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) console.log(err);
+		});
+	}
+	
 	if(args.length === 0)
 		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "speedrun [GAME HERE]**";
 	
@@ -183,6 +192,19 @@ const printLeaderBoard = (lbData, msg, game, category) => {
 	let runners = '```Markdown\n';
 	runners += lbData.data.players.data.length === 0 ? 'There are no runs for this category yet' 
 		: ' * Top 3 Speedrunners for ' + game.names.international + ', ' + category.name + ' * \n\n';
+		
+		if (game.names.international === 'Super Mario 64' && !badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":mushroom:")) 
+		{
+			TTBT.getDMChannel(msg.author.id).then(channel => {
+				TTBT.createMessage(channel.id, responder({badge: ":mushroom:"}, badge.message));
+			});
+			badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":mushroom:");
+			fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+				if (err) {
+					console.log(err);
+				}
+			});
+		}
 
 	for (let i = 0; i <= lbData.data.players.data.length - 1; i++) {
 		let time = lbData.data.runs[i].run.times.primary;

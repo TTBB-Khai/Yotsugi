@@ -1,14 +1,23 @@
-//'use strict';
-
 const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
+const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const fs = require('fs');
+const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 global.Promise = require('bluebird');
 
 TTBT.registerCommand("lyrics", (msg, args) => {
+	
+	if (typeof(badge.user.filter(user => user.id === msg.author.id)[0]) === 'undefined') {
+		badge.user.push({"id": msg.author.id, "badges": [":name_badge:"]});
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) console.log(err);
+		});
+	}
+	
 	if(args.length === 0)
-		return "Incorrect usage. Correct usage: **" + process.env['CLIENT_PREFIX'] + "lyrics [SONG HERE]**";
+		return `Incorrect usage. Correct usage: **${process.env['CLIENT_PREFIX']}lyrics [SONG HERE]**`;
 	
 	if (typeof(session.genius.user.filter(user => user.id === msg.author.id)[0]) === 'undefined')
 		session.genius.user.push({"id": msg.author.id, "session": false});
@@ -132,6 +141,18 @@ const printLyrics = (lyricData, msg, song) => {
 	
 	TTBT.createMessage(msg.channel.id, output);
 	session.genius.user.filter(user => user.id === msg.author.id)[0].session = false;
+	
+	if (song.result.url === 'https://genius.com/Mili-indie-summoning-101-lyrics' 
+		&& !badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":wolf:")) 
+	{
+		TTBT.getDMChannel(msg.author.id).then(channel => {
+			TTBT.createMessage(channel.id, responder({badge: ":wolf:"}, badge.message));
+		});
+		badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":wolf:");
+		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
+			if (err) console.log(err);
+		});
+	}
 }
 
 TTBT.registerCommandAlias("lyric", "lyrics");

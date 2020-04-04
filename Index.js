@@ -1,9 +1,8 @@
-//'use strict';
 const express = require('express');
 const Eris = require("eris");
 // const winston = require('winston');
 const path = require('path');
-const pm2 = require('pm2');
+//const pm2 = require('pm2');
 const app = express();
 const http = require('http');
 const port = process.env.PORT || 5000;
@@ -91,6 +90,7 @@ require('./Commands/Image/!Meta/loader');
 //require('./Commands/Secret/!Meta/loader');
 
 TTBT.on("ready", () => { console.log("Ready!") })
+TTBT.editStatus("invisible", "");
 // TTBT.on('error', logger.info);
 
 TTBT.connect();
