@@ -1,5 +1,6 @@
 const path = require('path');
 const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const outputJS = require(path.join(process.cwd(), 'res', 'messages', 'output.json'));
 const fs = require('fs');
 const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 const { modulus: mod } = require(path.join(process.cwd(), 'Utils', 'Modulus.js'));
@@ -27,7 +28,7 @@ TTBT.registerCommand("rps", (msg, args) => {
 				
 		if (result === 0 && !badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":necktie:")) {
 			TTBT.getDMChannel(msg.author.id).then(channel => {
-				TTBT.createMessage(channel.id, responder({badge: ":necktie:"}, badge.message));
+				TTBT.createMessage(channel.id, responder({user: "You", badge: ":necktie:"}, outputJS.badge.message));
 			});
 			badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":necktie:");
 			fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {

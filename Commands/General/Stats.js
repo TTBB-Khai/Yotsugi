@@ -2,6 +2,7 @@ require('moment-duration-format');
 const moment = require('moment');
 const path = require('path');
 const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const output = require(path.join(process.cwd(), 'res', 'messages', 'output.json'));
 const fs = require('fs');
 const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 
@@ -18,9 +19,7 @@ TTBT.registerCommand("stats", (msg) => {
 		return "This command only works in a server.";
 	
 	if (!badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":bar_chart:")) {
-		TTBT.getDMChannel(msg.author.id).then(channel => {
-			TTBT.createMessage(channel.id, responder({badge: ":bar_chart:"}, badge.message));
-		});
+		TTBT.createMessage(msg.channel.id, responder({user: msg.author.mention, badge: ":bar_chart:"}, output.badge.message));
 		badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":bar_chart:");
 		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
 			if (err) console.log(err);

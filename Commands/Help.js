@@ -1,5 +1,6 @@
 const path = require('path');
 const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const output = require(path.join(process.cwd(), 'res', 'messages', 'output.json'));
 const fs = require('fs');
 const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 
@@ -13,9 +14,7 @@ var helpCommand = TTBT.registerCommand("help", (msg) => {
 	}
 	
 	if (!badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":beginner:")) {
-		TTBT.getDMChannel(msg.author.id).then(channel => {
-			TTBT.createMessage(channel.id, responder({badge: ":beginner:"}, badge.message));
-		});
+		TTBT.createMessage(msg.channel.id, responder({user: msg.author.mention, badge: ":beginner:"}, output.badge.message));
 		badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":beginner:");
 		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
 			if (err) console.log(err);
@@ -83,6 +82,8 @@ var helpCommand = TTBT.registerCommand("help", (msg) => {
 				+ "<obama - Obama pulls up a sign saying something>\n"
 				+ "<joseph - \"Next you'll say...\">\n"
 				+ "<kill - Yotsuba shoots someone>\n\n"
+				+ " * Collections *\n"
+				+ "<badge - Shows your badges>\n\n"
 				+ "Type " + process.env['CLIENT_PREFIX'] + "<help command> for more information on a command\n"
 				+ "Example: " + process.env['CLIENT_PREFIX'] + "help ping"
 				+ "```");
@@ -112,7 +113,7 @@ helpCommand.registerSubcommand("help", (msg) => {
 	if (!badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":pretzel:")) {
 		TTBT.createMessage(msg.channel.id, ":frowning: | Okay, I really can't help you any more than this....\n Is there something you need, like a :pretzel:? I can give you a :pretzel:!\n");
 		TTBT.getDMChannel(msg.author.id).then(channel => {
-			TTBT.createMessage(channel.id, responder({badge: ":pretzel:"}, badge.message));
+			TTBT.createMessage(channel.id, responder({user: "You", badge: ":pretzel:"}, output.badge.message));
 		});
 		badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":pretzel:");
 		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {

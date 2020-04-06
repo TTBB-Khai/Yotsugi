@@ -1,6 +1,7 @@
 const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const output = require(path.join(process.cwd(), 'res', 'messages', 'output.json'));
 const fs = require('fs');
 const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 
@@ -167,7 +168,7 @@ const startQueue = (msg, singers) => {
 		
 		if (singers[0].id !== '408250314282500096' && !badge.user.filter(user => user.id === singers[0].id)[0].badges.find(badge => badge === ":microphone:")) {
 			TTBT.getDMChannel(singers[0].id).then(channel => {
-				TTBT.createMessage(channel.id, responder({badge: ":microphone:"}, badge.message));
+				TTBT.createMessage(channel.id, responder({user: "You", badge: ":microphone:"}, output.badge.message));
 			});
 			badge.user.filter(user => user.id === singers[0].id)[0].badges.push(":microphone:");
 			fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
