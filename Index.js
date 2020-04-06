@@ -87,6 +87,7 @@ require('./Commands/Utility/!Meta/loader');
 require('./Commands/Search/!Meta/loader');
 require('./Commands/Gaming/!Meta/loader');
 require('./Commands/Image/!Meta/loader');
+require('./Commands/Collections/!Meta/loader');
 //require('./Commands/Secret/!Meta/loader');
 
 TTBT.on("ready", () => { console.log("Ready!") })

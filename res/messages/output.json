@@ -1,0 +1,7 @@
+{
+"badge":
+	{
+		"message":"**${user} unlocked the ${badge} badge!**\nType ?badge to see your badges!",
+		"badges":[":name_badge:",":beginner:",":information_source:",":bar_chart:",":frame_photo:",":camera_with_flash:",":tv:",":desktop:",":fortune_cookie:",":game_die:",":cowboy:",":point_left:",":8ball:",":orange_book:",":books:",":mushroom:",":race_car:",":thermometer:",":rocket:",":tea:",":beers:",":scarf:",":microphone:",":necktie:",":wolf:",":rat:",":tada:",":pretzel:",":camera:"]
+	}
+}

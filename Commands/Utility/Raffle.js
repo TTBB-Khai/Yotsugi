@@ -2,6 +2,7 @@ const path = require('path');
 const { delay: wait } = require(path.join(process.cwd(), 'Utils', 'Delay.js'));
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const output = require(path.join(process.cwd(), 'res', 'messages', 'output.json'));
 const fs = require('fs');
 const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 
@@ -11,9 +12,7 @@ TTBT.registerCommand("raffle", (msg) => {
 	if (typeof(badge.user.filter(user => user.id === msg.author.id)[0]) === 'undefined') {
 		badge.user.push({"id": msg.author.id, "badges": [":name_badge:"]});
 		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
-			if (err) {
-				console.log(err);
-			}
+			if (err) console.log(err);
 		});
 	}
 	
@@ -136,7 +135,7 @@ const getWinner = async (msg, rafflers) => {
 		.then(() => {
 			if (!badge.user.filter(user => user.id === choice.id)[0].badges.find(badge => badge === ":tada:")) {
 				TTBT.getDMChannel(choice.id).then(channel => {
-					TTBT.createMessage(channel.id, responder({badge: ":tada:"}, badge.message));
+					TTBT.createMessage(channel.id, responder({user: "You", badge: ":tada:"}, output.badge.message));
 				});
 				badge.user.filter(user => user.id === choice.id)[0].badges.push(":tada:");
 				fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {

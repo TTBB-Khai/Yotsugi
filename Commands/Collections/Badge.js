@@ -1,5 +1,6 @@
 const path = require('path');
 const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const output = require(path.join(process.cwd(), 'res', 'messages', 'output.json'));
 const fs = require('fs');
 
 var badgeCommand = TTBT.registerCommand("badge", (msg, args) => {
@@ -44,7 +45,7 @@ var badgeCommand = TTBT.registerCommand("badge", (msg, args) => {
 		badgeArr.push(badge);
 	})
 		
-	return `**${user.username}'s Badges (${badgeArr.length}/${badge.badges.length})\n`
+	return `**${user.username}'s Badges (${badgeArr.length}/${output.badge.badges.length})\n`
 		+`===================================**\n`
 		+ `${badges}`;
 	
@@ -79,6 +80,7 @@ badgeCommand.registerSubcommand("hint", (msg) => {
 			+ ":point_left: - Who is you?\n"
 			+ ":tea: - ...*sips*\n"
 			+ ":necktie: - *groans*...\n"
+			+ ":tada: - Congratulations, you win!\n"
 			+ ":beers: - Your friend really likes to party, huh?\n"
 			+ ":8ball: - One can only answer so much...\n\n"
 			+ "**NORMAL COMMANDS + SEARCH**\n"
@@ -92,6 +94,7 @@ badgeCommand.registerSubcommand("hint", (msg) => {
 			+ ":pretzel: - You seem lost...\n"
 			+ ":rat: - _______, I choose you!\n"
 			+ ":scarf: - NANIII!?\n"
+			+ ":microphone: - You have an amazing voice <3\n"
 			+ ":rocket: - Fly me to the **moon**. Let me play among the stars."
 });
 
@@ -102,19 +105,17 @@ badgeCommand.registerSubcommand("list", (msg) => {
 	if (typeof(badge.user.filter(user => user.id === msg.author.id)[0]) === 'undefined') {
 		badge.user.push({"id": msg.author.id, "badges": [":name_badge:"]});
 		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
-			if (err) {
-				console.log(err);
-			}
+			if (err) console.log(err);
 		});
 	}
 	
 	let badges = "";
 	
-	badge.badges.forEach(badge => {
+	output.badge.badges.forEach(badge => {
 		badges += badge;
 	})
 	
-	return `**List of Available Badges (${badge.badges.length})\n`
+	return `**List of Available Badges (${output.badge.badges.length})\n`
 		+ `===================================**\n`
 		+ `${badges}`;
 });

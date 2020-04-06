@@ -1,5 +1,6 @@
 const path = require('path');
 const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const output = require(path.join(process.cwd(), 'res', 'messages', 'output.json'));
 const fs = require('fs');
 const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 
@@ -30,7 +31,7 @@ TTBT.registerCommand("temperature", (msg, args) => {
 		
 		if (result === -459.67 && !badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":thermometer:")) {
 			TTBT.getDMChannel(msg.author.id).then(channel => {
-				TTBT.createMessage(channel.id, responder({badge: ":thermometer:"}, badge.message));
+				TTBT.createMessage(channel.id, responder({user: "You", badge: ":thermometer:"}, output.badge.message));
 			});
 			badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":thermometer:");
 			fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
@@ -46,7 +47,7 @@ TTBT.registerCommand("temperature", (msg, args) => {
 		
 		if (result === -273.15 && !badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":thermometer:")) {
 			TTBT.getDMChannel(msg.author.id).then(channel => {
-				TTBT.createMessage(channel.id, responder({badge: ":thermometer:"}, badge.message));
+				TTBT.createMessage(channel.id, responder({user: "You", badge: ":thermometer:"}, output.badge.message));
 			});
 			badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":thermometer:");
 			fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {

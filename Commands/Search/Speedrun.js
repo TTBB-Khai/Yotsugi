@@ -2,6 +2,7 @@ const path = require('path')
 const session = require(path.join(process.cwd(), 'res', 'data', 'session.json'));
 const fetch = require('node-fetch');
 const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const output = require(path.join(process.cwd(), 'res', 'messages', 'output.json'));
 const fs = require('fs');
 const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 global.Promise = require('bluebird');
@@ -196,7 +197,7 @@ const printLeaderBoard = (lbData, msg, game, category) => {
 		if (game.names.international === 'Super Mario 64' && !badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":mushroom:")) 
 		{
 			TTBT.getDMChannel(msg.author.id).then(channel => {
-				TTBT.createMessage(channel.id, responder({badge: ":mushroom:"}, badge.message));
+				TTBT.createMessage(channel.id, responder({user: "You", badge: ":mushroom:"}, output.badge.message));
 			});
 			badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":mushroom:");
 			fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {

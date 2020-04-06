@@ -1,5 +1,6 @@
 const path = require('path');
 const badge = require(path.join(process.cwd(), 'res', 'data', 'badges.json'));
+const output = require(path.join(process.cwd(), 'res', 'messages', 'output.json'));
 const fs = require('fs');
 const { responder: responder } = require(path.join(process.cwd(), 'Utils', 'Responder.js'));
 
@@ -42,7 +43,7 @@ TTBT.registerCommand("drink", (msg, args) => {
 			&& !badge.user.filter(user => user.id === msg.mentions[0].id)[0].badges.find(badge => badge === ":beers:")) 
 		{
 			TTBT.getDMChannel(msg.mentions[0].id).then(channel => {
-				TTBT.createMessage(channel.id, responder({badge: ":beers:"}, badge.message));
+				TTBT.createMessage(channel.id, responder({user: "You", badge: ":beers:"}, output.badge.message));
 			});
 			badge.user.filter(user => user.id === msg.mentions[0].id)[0].badges.push(":beers:");
 			fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
@@ -56,7 +57,7 @@ TTBT.registerCommand("drink", (msg, args) => {
 	
 	if (random === 7 && user === msg.author.mention && !badge.user.filter(user => user.id === msg.author.id)[0].badges.find(badge => badge === ":tea:")) {
 		TTBT.getDMChannel(msg.author.id).then(channel => {
-			TTBT.createMessage(channel.id, responder({badge: ":tea:"}, badge.message));
+			TTBT.createMessage(channel.id, responder({user: "You", badge: ":tea:"}, output.badge.message));
 		});
 		badge.user.filter(user => user.id === msg.author.id)[0].badges.push(":tea:");
 		fs.writeFile((path.join(process.cwd(), 'res', 'data', 'badges.json')), JSON.stringify(badge), err => {
