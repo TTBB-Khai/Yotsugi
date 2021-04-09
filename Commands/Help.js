@@ -48,8 +48,6 @@ var helpCommand = TTBT.registerCommand("help", (msg) => {
 				+ "<fortune - Outputs a random fortune>\n"
 				+ "<drink - Gives you or a mentioned user a random drink>\n"
 				+ "<8ball - Ask me a yes or no question>\n"
-				+ "<fish - Catches a fish[WIP]>\n"
-				+ "<slot - Plays a slot machine[WIP]>\n"
 				+ "<who - Picks a random user in the server based on a given question>\n"
 				+ "<karaoke - Starts a karaoke session>\n"
 				+ "<rps - Plays rock,paper,scissors with me>\n\n"
@@ -59,11 +57,7 @@ var helpCommand = TTBT.registerCommand("help", (msg) => {
 				+ "<ctb Searches a Catch the Beat profile>\n"
 				+ "<mania Searches an osu!mania profile>\n\n"
 				+ " * Search *\n"
-				+ "<anime - Searches information on a given anime title from myanimelist.net>\n"
-				+ "<manga - Searches information on a given manga title from myanimelist.net>\n"
 				+ "<challonge - Searches tournament information from challonge.com>\n"
-				+ "<speedrun - Searches a speedrun leaderboard from speedrun.com[WIP]>\n"
-				+ "<gif - Searches a random gif from giphy.com>\n"
 				+ "<lmgtfy - Searches a query on lmgtfy.com>\n"
 				+ "<lyrics - Searches song lyrics from genius.com>\n"
 				+ "<wikipedia - Searches an article from wikipedia.com>\n"
@@ -79,7 +73,6 @@ var helpCommand = TTBT.registerCommand("help", (msg) => {
 				+ "<temperature - Converts celsius to fahrenheit or vice versa>\n"
 				+ "<distance - Converts kilometers to miles or vice versa>\n\n"
 				+ " * Images *\n"
-				+ "<obama - Obama pulls up a sign saying something>\n"
 				+ "<joseph - \"Next you'll say...\">\n"
 				+ "<kill - Yotsuba shoots someone>\n\n"
 				+ " * Collections *\n"
@@ -513,48 +506,6 @@ helpCommand.registerSubcommand("8ball", (msg) => {
 	}
 );
 
-helpCommand.registerSubcommand("fish", (msg) => {
-	return "```Markdown\n"
-			+ "**Fish**\n\n"
-			+ " * Description *\n"
-			+ "Catches a fish\n"
-			+ " * Arguments *\n"
-			+ "<none>\n"
-			+ " * Examples *\n"
-			+ process.env['CLIENT_PREFIX'] + "fish\n"
-			+ "```";
-},	{
-		caseInsensitive: true,
-		cooldown: 3000,
-		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
-		requirements: {
-			"manageMessages": true
-		}
-	}
-);
-
-helpCommand.registerSubcommand("slot", (msg) => {
-	return "```Markdown\n"
-			+ "**Slot**\n\n"
-			+ " * Description *\n"
-			+ "Plays with a slot machine\n"
-			+ " * Arguments *\n"
-			+ "<amount of bitties> OR <none>\n"
-			+ " * Aliases *\n"
-			+ "slots\n"
-			+ " * Examples *\n"
-			+ process.env['CLIENT_PREFIX'] + "slot 10 OR " + process.env['CLIENT_PREFIX'] + "slot\n"
-			+ "```";
-},	{
-		caseInsensitive: true,
-		cooldown: 3000,
-		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
-		requirements: {
-			"manageMessages": true
-		}
-	}
-);
-
 helpCommand.registerSubcommand("who", (msg) => {
 	return "```Markdown\n"
 			+ "**Who**\n\n"
@@ -610,29 +561,6 @@ helpCommand.registerSubcommand("rps", (msg) => {
 			+ "<r> OR <p> OR <s>\n"
 			+ " * Examples *\n"
 			+ process.env['CLIENT_PREFIX'] + "rps r OR " + process.env['CLIENT_PREFIX'] + "rps p OR " + process.env['CLIENT_PREFIX'] + "rps s\n"
-			+ "```";
-},	{
-		caseInsensitive: true,
-		cooldown: 3000,
-		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
-		requirements: {
-			"manageMessages": true
-		}
-	}
-);
-
-helpCommand.registerSubcommand("obama", (msg) => {
-	return "```Markdown\n"
-			+ "**Obama**\n\n"
-			+ " * Description *\n"
-			+ "Sends an image of Obama with a sign, saying whatever arguements are passed.\n"
-			+ "Font size scales depending on the amount of characters for a word.\n"
-			+ "Max number of words allowed is 3.\n"
-			+ "Max number of characters in a word is 32.\n"
-			+ " * Arguments *\n"
-			+ "<anything>\n"
-			+ " * Examples *\n"
-			+ process.env['CLIENT_PREFIX'] + "obama hello world"
 			+ "```";
 },	{
 		caseInsensitive: true,
@@ -770,46 +698,6 @@ helpCommand.registerSubcommand("mania", (msg) => {
 
 helpCommand.registerSubcommandAlias("om", "mania");
 	
-helpCommand.registerSubcommand("anime", (msg) => {
-	return "```Markdown\n"
-			+ "**Anime**\n\n"
-			+ " * Description *\n"
-			+ "Searches information on a given anime title from myanimelist.net\n"
-			+ " * Arguments *\n"
-			+ "<anume name>\n"
-			+ " * Examples *\n"
-			+ process.env['CLIENT_PREFIX'] + "anime naruto \n"
-			+ "```";
-},	{
-		caseInsensitive: true,
-		cooldown: 3000,
-		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
-		requirements: {
-			"manageMessages": true
-		}
-	}
-);
-	
-helpCommand.registerSubcommand("manga", (msg) => {
-	return "```Markdown\n"
-			+ "**Manga**\n\n"
-			+ " * Description *\n"
-			+ "Searches information on a given manga title from myanimelist.net\n"
-			+ " * Arguments *\n"
-			+ "<manga name>\n"
-			+ " * Examples *\n"
-			+ process.env['CLIENT_PREFIX'] + "manga naruto \n"
-			+ "```";
-},	{
-		caseInsensitive: true,
-		cooldown: 3000,
-		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
-		requirements: {
-			"manageMessages": true
-		}
-	}
-);
-	
 helpCommand.registerSubcommand("challonge", (msg) => {
 	return "```Markdown\n"
 			+ "**Challonge**\n\n"
@@ -829,97 +717,6 @@ helpCommand.registerSubcommand("challonge", (msg) => {
 		}
 	}
 );
-	
-helpCommand.registerSubcommand("speedrun", (msg) => {
-	return "```Markdown\n"
-			+ "**Speedrun**\n\n"
-			+ " * Description *\n"
-			+ "Searches the speedrunning leaderboard for a video game under a specific category\n"
-			+ " * Arguments *\n"
-			+ "<game name>\n"
-			+ " * Aliases *\n"
-			+ "sr\n"
-			+ " * Examples *\n"
-			+ process.env['CLIENT_PREFIX'] + "speedrun zelda \n"
-			+ "```";
-},	{
-		caseInsensitive: true,
-		cooldown: 3000,
-		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
-		requirements: {
-			"manageMessages": true
-		}
-	}
-);
-
-helpCommand.registerSubcommandAlias("sr", "speedrun");
-
-helpCommand.registerSubcommand("spotify", (msg) => {
-	return "```Markdown\n"
-			+ "**Spotify**\n\n"
-			+ " * Description *\n"
-			+ "Searches an artist on Spotify.com\n"
-			+ " * Arguments *\n"
-			+ "<artist name>\n"
-			+ " * Examples *\n"
-			+ process.env['CLIENT_PREFIX'] + "spotify mili \n"
-			+ "```";
-},	{
-		caseInsensitive: true,
-		cooldown: 3000,
-		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
-		requirements: {
-			"manageMessages": true
-		}
-	}
-);
-
-helpCommand.registerSubcommand("token", (msg) => {
-	return "```Markdown\n"
-			+ "**Token**\n\n"
-			+ " * Description *\n"
-			+ "OWNER ONLY COMMAND!\n"
-			+ "Gives you a spotify refresh token or refreshes your current access token.\n"
-			+ "Please refer to the README if you have any issues setting up the command.\n"
-			+ " * Arguments *\n"
-			+ "<none>\n"
-			+ " * Examples *\n"
-			+ process.env['CLIENT_PREFIX'] + "token \n"
-			+ "```";
-},	{
-		caseInsensitive: true,
-		cooldown: 3000,
-		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
-		requirements: {
-			"manageMessages": true
-		}
-	}
-);
-
-
-helpCommand.registerSubcommand("gif", (msg) => {
-	return "```Markdown\n"
-			+ "**Gif**\n\n"
-			+ " * Description *\n"
-			+ "Searches and posts a random gif from Giphy.com\n"
-			+ " * Arguments *\n"
-			+ "<search tag(s)>\n"
-			+ " * Aliases *\n"
-			+ "giphy\n"
-			+ " * Examples *\n"
-			+ process.env['CLIENT_PREFIX'] + "gif cat OR " + process.env['CLIENT_PREFIX'] + "gif cat dog\n"
-			+ "```";
-},	{
-		caseInsensitive: true,
-		cooldown: 3000,
-		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
-		requirements: {
-			"manageMessages": true
-		}
-	}
-);
-
-helpCommand.registerSubcommandAlias("giphy", "gif");
 
 helpCommand.registerSubcommand("lmgtfy", (msg) => {
 	return "```Markdown\n"
@@ -1143,23 +940,3 @@ helpCommand.registerSubcommand("distance", (msg) => {
 );
 
 helpCommand.registerSubcommandAlias("dist", "distance");
-
-helpCommand.registerSubcommand("mili", (msg) => {
-	return "```Markdown\n"
-			+ "**Mili**\n\n"
-			+ " * Description *\n"
-			+ "Plays a random Project Mili song from Mili\'s official YouTube channel.\n"
-			+ " * Arguments *\n"
-			+ "<none>\n"
-			+ " * Examples *\n"
-			+ process.env['CLIENT_PREFIX'] + "mili\n"
-			+ "```";
-},	{
-		caseInsensitive: true,
-		cooldown: 3000,
-		cooldownMessage: "Slow down! This command has a **3 second cooldown!**",
-		requirements: {
-			"manageMessages": true
-		}
-	}
-);
