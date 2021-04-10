@@ -18,16 +18,7 @@
 	"challonge": {
 		"user": [{"id": "0", "session": false}]
 	},
-	
-	"spotify": {
-		"user": [{"id": "0", "session": false}]
-	},
-	
 	"speedrun": {
-		"user": [{"id": "0", "session": false}]
-	},
-	
-	"mal": {
 		"user": [{"id": "0", "session": false}]
 	},
 	
