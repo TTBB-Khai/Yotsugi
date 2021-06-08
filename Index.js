@@ -5,7 +5,7 @@ const path = require('path');
 //const pm2 = require('pm2');
 const app = express();
 const http = require('http');
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 let server = http.createServer(app);
 
 require('dotenv-safe').config({
