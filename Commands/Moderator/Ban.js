@@ -25,7 +25,7 @@ TTBT.registerCommand("ban", (msg, args) => {
 		return user;
 	
 	TTBT.banGuildMember(msg.channel.guild.id, user.id, 0, reasonToBan)
-	.then(() => TTBT.createMessage(msg.channel.id, user.mention + " has been banned" + reasonToBan + "."))
+	.then(() => TTBT.createMessage(msg.channel.id, user.mention + " has been banned " + reasonToBan + "."))
 	.catch(err => TTBT.createMessage(msg.channel.id, "This user could not be banned."))	
 	
 },	{
